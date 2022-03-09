@@ -3,7 +3,8 @@ import { Task } from '@/types/task'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
-import Tasks from './components/tasks'
+import Popup from '@/components/popup'
+import Tasks from '@/components/tasks'
 
 const Home: NextPage = () => {
   /*
@@ -72,11 +73,60 @@ const Home: NextPage = () => {
     useState<Array<Task>>(initialTasksState)
   const [finishedTasks, setFinishedTasks] =
     useState<Array<Task>>(initialTasksState)
+  const [popup, setPopup] = useState({
+    isOpen: false,
+    chosenDate: '',
+  })
+  const [form, setForm] = useState({
+    taskTitle: '',
+    description: '',
+    from: '',
+    to: '',
+  })
 
   /*
    ** Required functions
+   * ! - Form management can be made simpler, please work on that when you are able to
    */
+  function handlePopup(e: React.MouseEvent<HTMLButtonElement>): void {
+    let chosenDate = (e.target as HTMLButtonElement).value
+    if (e.target) {
+      setPopup({
+        isOpen: true,
+        chosenDate,
+      })
+    }
+  }
+  function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
+    let taskTitle = (e.target as HTMLInputElement).value
+    setForm({
+      ...form,
+      taskTitle,
+    })
+  }
+  function setDescription(e: React.ChangeEvent<HTMLInputElement>): void {
+    let description = (e.target as HTMLInputElement).value
+    setForm({
+      ...form,
+      description,
+    })
+  }
+  function setFrom(e: React.ChangeEvent<HTMLInputElement>): void {
+    let from = (e.target as HTMLInputElement).value
+    setForm({
+      ...form,
+      from,
+    })
+  }
+  function setTo(e: React.ChangeEvent<HTMLInputElement>): void {
+    let to = (e.target as HTMLInputElement).value
+    setForm({
+      ...form,
+      to,
+    })
+  }
   function markAsDone(): void {}
+  function submitForm(): void {}
 
   return (
     <>
@@ -129,7 +179,7 @@ const Home: NextPage = () => {
               <button
                 key={i}
                 value={day + '/' + currentMonth + '/' + currentYear}
-                // onClick={}
+                onClick={handlePopup}
                 className={`h-[100px] w-[100px] items-center justify-center border transition-all duration-150 ease-linear ${
                   day == currentDate
                     ? 'bg-light-theme-primary/25 text-light-theme-primary hover:bg-light-theme-primary hover:text-white'
@@ -142,6 +192,18 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+
+      {popup.isOpen ? (
+        <Popup
+          popup={popup}
+          setTaskTitle={setTaskTitle}
+          setDescription={setDescription}
+          setFrom={setFrom}
+          setTo={setTo}
+          setPopup={setPopup}
+          submitForm={submitForm}
+        />
+      ) : null}
     </>
   )
 }
