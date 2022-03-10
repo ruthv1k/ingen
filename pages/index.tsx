@@ -165,10 +165,14 @@ const Home: NextPage = () => {
         ...form,
         chosenDate,
       }
-      if (formattedChosenDate > currentDate)
+      if (formattedChosenDate > currentDate) {
         setUpcomingTasks([...upcomingTasks, task])
-      else if (formattedChosenDate === currentDate)
+        setCurrentTab(1)
+      } else if (formattedChosenDate === currentDate) {
         setTodaysTasks([...todaysTasks, task])
+        setCurrentTab(0)
+      }
+      setPopup({ ...popup, isOpen: false })
     }
   }
 
