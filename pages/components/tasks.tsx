@@ -4,7 +4,7 @@ import { Task } from '@/types/task'
 interface Props {
   type: string
   tasks: Array<Task>
-  markAsDone: () => void
+  markAsDone: (title: string, chosenDate: string) => void
 }
 
 const Tasks: React.FC<Props> = ({ type, tasks, markAsDone }) => {
@@ -29,12 +29,12 @@ const Tasks: React.FC<Props> = ({ type, tasks, markAsDone }) => {
                   <span className="block px-5 py-3">{task.taskTitle}</span>
 
                   <button
-                    className="flex items-center justify-center px-4 py-3 text-white bg-blue-400 hover:bg-green-400"
-                    onClick={markAsDone}
+                    className="flex items-center justify-center bg-light-theme-primary/25 px-4 py-3 text-light-theme-primary transition-all duration-150 ease-linear hover:bg-green-400 hover:text-white"
+                    onClick={() => markAsDone(task.taskTitle, task.chosenDate)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6"
+                      className="h-6 w-6"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"

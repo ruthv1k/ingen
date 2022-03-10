@@ -57,6 +57,7 @@ const Home: NextPage = () => {
 
   const initialTasksState = [
     {
+      chosenDate: '',
       taskTitle: '',
       description: '',
       from: '',
@@ -78,6 +79,7 @@ const Home: NextPage = () => {
     chosenDate: '',
   })
   const [form, setForm] = useState({
+    chosenDate: '',
     taskTitle: '',
     description: '',
     from: '',
@@ -97,6 +99,15 @@ const Home: NextPage = () => {
       })
     }
   }
+
+  // ! - Doubtful about the event type - might have to check it out later
+  function setChosenDate(e: React.ChangeEvent<HTMLInputElement>) {
+    let chosenDate = (e.target as HTMLInputElement).value
+    setForm({
+      ...form,
+      chosenDate,
+    })
+  }
   function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
     let taskTitle = (e.target as HTMLInputElement).value
     setForm({
@@ -112,7 +123,7 @@ const Home: NextPage = () => {
     })
   }
   function setFrom(e: React.ChangeEvent<HTMLInputElement>): void {
-    let from = (e.target as HTMLInputElement).value
+    let from = (e.currentTarget as HTMLInputElement).value
     setForm({
       ...form,
       from,
@@ -125,16 +136,49 @@ const Home: NextPage = () => {
       to,
     })
   }
-  function markAsDone(): void {}
-  function submitForm(): void {}
+  function markAsDone(taskTitle: string, chosenDate: string): void {
+    let formattedChosenDate = parseInt(chosenDate.split('/')[0])
+    if (formattedChosenDate > currentDate) {
+      let tempTasks = upcomingTasks
+      upcomingTasks.map((task) => {
+        if (task.taskTitle === taskTitle) {
+          tempTasks.splice(upcomingTasks.indexOf(task), 1)
+        }
+      })
+
+      setUpcomingTasks(tempTasks)
+    } else if (formattedChosenDate === currentDate) {
+      let tempTasks = todaysTasks
+      todaysTasks.map((task) => {
+        if (task.taskTitle === taskTitle) {
+          tempTasks.splice(todaysTasks.indexOf(task), 1)
+        }
+      })
+
+      setTodaysTasks(tempTasks)
+    }
+  }
+  function submitForm(chosenDate: string): void {
+    if (form.taskTitle !== '') {
+      let formattedChosenDate = parseInt(chosenDate.split('/')[0])
+      let task = {
+        ...form,
+        chosenDate,
+      }
+      if (formattedChosenDate > currentDate)
+        setUpcomingTasks([...upcomingTasks, task])
+      else if (formattedChosenDate === currentDate)
+        setTodaysTasks([...todaysTasks, task])
+    }
+  }
 
   return (
     <>
       <Head>
         <title>Simple Task Planner</title>
       </Head>
-      <div className="flex items-center w-screen">
-        <div className="flex flex-col items-center justify-center h-screen px-6 mx-auto w-fit">
+      <div className="flex w-screen items-center">
+        <div className="mx-auto flex h-screen w-fit flex-col items-center justify-center px-6">
           <ul>
             {tabs &&
               tabs.map((tab) => (
@@ -169,22 +213,25 @@ const Home: NextPage = () => {
             />
           )}
         </div>
-        <div className="flex flex-col items-start justify-center w-2/5 h-screen mx-auto">
+        <div className="mx-auto flex h-screen w-2/5 flex-col items-start justify-center">
           <h1 className="text-xl font-semibold">Calendar</h1>
           <h5 className="mt-2 mb-6 text-base font-medium text-black/50">
             {currentMonth} {currentYear}
           </h5>
-          <div className="grid justify-start grid-cols-8">
+          <div className="grid grid-cols-8 justify-start">
             {daysInMonth.map((day, i) => (
               <button
                 key={i}
                 value={day + '/' + currentMonth + '/' + currentYear}
                 onClick={handlePopup}
-                className={`h-[100px] w-[100px] items-center justify-center border transition-all duration-150 ease-linear ${
+                className={`h-[90px] w-[90px] items-center justify-center border transition-all duration-150 ease-linear ${
                   day == currentDate
-                    ? 'bg-light-theme-primary/25 text-light-theme-primary hover:bg-light-theme-primary hover:text-white'
-                    : 'border-light-theme-primary/10 bg-white hover:bg-light-theme-primary/25 '
+                    ? 'bg-light-theme-primary font-bold text-white'
+                    : day < currentDate
+                    ? 'bg-light-theme-primary/5'
+                    : 'border-light-theme-primary/10 bg-white hover:bg-light-theme-primary/25 hover:text-light-theme-primary'
                 }`}
+                disabled={day < currentDate ? true : false}
               >
                 {day}
               </button>
@@ -196,6 +243,7 @@ const Home: NextPage = () => {
       {popup.isOpen ? (
         <Popup
           popup={popup}
+          setChosenDate={setChosenDate}
           setTaskTitle={setTaskTitle}
           setDescription={setDescription}
           setFrom={setFrom}
