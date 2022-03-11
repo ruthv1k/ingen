@@ -78,13 +78,6 @@ const Home: NextPage = () => {
     isOpen: false,
     chosenDate: '',
   })
-  const [form, setForm] = useState({
-    chosenDate: '',
-    taskTitle: '',
-    description: '',
-    from: '',
-    to: '',
-  })
 
   /*
    ** Required functions
@@ -100,79 +93,35 @@ const Home: NextPage = () => {
     }
   }
 
-  // ! - Doubtful about the event type - might have to check it out later
-  function setChosenDate(e: React.ChangeEvent<HTMLInputElement>) {
-    let chosenDate = (e.target as HTMLInputElement).value
-    setForm({
-      ...form,
-      chosenDate,
-    })
-  }
-  function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
-    let taskTitle = (e.target as HTMLInputElement).value
-    setForm({
-      ...form,
-      taskTitle,
-    })
-  }
-  function setDescription(e: React.ChangeEvent<HTMLInputElement>): void {
-    let description = (e.target as HTMLInputElement).value
-    setForm({
-      ...form,
-      description,
-    })
-  }
-  function setFrom(e: React.ChangeEvent<HTMLInputElement>): void {
-    let from = (e.currentTarget as HTMLInputElement).value
-    setForm({
-      ...form,
-      from,
-    })
-  }
-  function setTo(e: React.ChangeEvent<HTMLInputElement>): void {
-    let to = (e.target as HTMLInputElement).value
-    setForm({
-      ...form,
-      to,
-    })
-  }
   function markAsDone(taskTitle: string, chosenDate: string): void {
     let formattedChosenDate = parseInt(chosenDate.split('/')[0])
+
     if (formattedChosenDate > currentDate) {
-      let tempTasks = upcomingTasks
-      upcomingTasks.map((task) => {
-        if (task.taskTitle === taskTitle) {
-          tempTasks.splice(upcomingTasks.indexOf(task), 1)
-        }
-      })
+      let tempTasks = upcomingTasks.filter(
+        (task) => task.taskTitle !== taskTitle
+      )
 
       setUpcomingTasks(tempTasks)
     } else if (formattedChosenDate === currentDate) {
-      let tempTasks = todaysTasks
-      todaysTasks.map((task) => {
-        if (task.taskTitle === taskTitle) {
-          tempTasks.splice(todaysTasks.indexOf(task), 1)
-        }
-      })
+      let tempTasks = todaysTasks.filter((task) => task.taskTitle !== taskTitle)
 
       setTodaysTasks(tempTasks)
     }
   }
-  function submitForm(chosenDate: string): void {
+
+  function submitForm(form: Task): void {
     if (form.taskTitle !== '') {
-      let formattedChosenDate = parseInt(chosenDate.split('/')[0])
-      let task = {
-        ...form,
-        chosenDate,
-      }
+      let formattedChosenDate = parseInt(form.chosenDate.split('/')[0])
+
       if (formattedChosenDate > currentDate) {
-        setUpcomingTasks([...upcomingTasks, task])
+        setUpcomingTasks([...upcomingTasks, form])
         setCurrentTab(1)
       } else if (formattedChosenDate === currentDate) {
-        setTodaysTasks([...todaysTasks, task])
+        setTodaysTasks((prevData) => [...prevData, form])
         setCurrentTab(0)
       }
-      setPopup({ ...popup, isOpen: false })
+
+      setPopup({ chosenDate: '', isOpen: false })
     }
   }
 
@@ -181,8 +130,8 @@ const Home: NextPage = () => {
       <Head>
         <title>Simple Task Planner</title>
       </Head>
-      <div className="flex w-screen items-center">
-        <div className="mx-auto flex h-screen w-fit flex-col items-center justify-center px-6">
+      <div className="flex items-center w-screen">
+        <div className="flex flex-col items-center justify-center h-screen px-6 mx-auto w-fit">
           <ul>
             {tabs &&
               tabs.map((tab) => (
@@ -217,12 +166,12 @@ const Home: NextPage = () => {
             />
           )}
         </div>
-        <div className="mx-auto flex h-screen w-2/5 flex-col items-start justify-center">
+        <div className="flex flex-col items-start justify-center w-2/5 h-screen mx-auto">
           <h1 className="text-xl font-semibold">Calendar</h1>
           <h5 className="mt-2 mb-6 text-base font-medium text-black/50">
             {currentMonth} {currentYear}
           </h5>
-          <div className="grid grid-cols-8 justify-start">
+          <div className="grid justify-start grid-cols-8">
             {daysInMonth.map((day, i) => (
               <button
                 key={i}
@@ -245,16 +194,7 @@ const Home: NextPage = () => {
       </div>
 
       {popup.isOpen ? (
-        <Popup
-          popup={popup}
-          setChosenDate={setChosenDate}
-          setTaskTitle={setTaskTitle}
-          setDescription={setDescription}
-          setFrom={setFrom}
-          setTo={setTo}
-          setPopup={setPopup}
-          submitForm={submitForm}
-        />
+        <Popup popup={popup} setPopup={setPopup} submitForm={submitForm} />
       ) : null}
     </>
   )

@@ -1,36 +1,58 @@
+import { Task } from '@/types/task'
+import { useEffect } from 'react'
+
 interface Props {
   popup: {
     isOpen: boolean
     chosenDate: string
   }
-  setChosenDate: (e: React.ChangeEvent<HTMLInputElement>) => void
-  setTaskTitle: (e: React.ChangeEvent<HTMLInputElement>) => void
-  setDescription: (e: React.ChangeEvent<HTMLInputElement>) => void
-  setFrom: (e: React.ChangeEvent<HTMLInputElement>) => void
-  setTo: (e: React.ChangeEvent<HTMLInputElement>) => void
   setPopup: React.Dispatch<
     React.SetStateAction<{
       isOpen: boolean
       chosenDate: string
     }>
   >
-  submitForm: (chosenDate: string) => void
+  submitForm: (form: Task) => void
 }
 
-const Popup: React.FC<Props> = ({
-  popup,
-  setChosenDate,
-  setPopup,
-  setTaskTitle,
-  setDescription,
-  setFrom,
-  setTo,
-  submitForm,
-}) => {
+const Popup: React.FC<Props> = ({ popup, setPopup, submitForm }) => {
+  let form: Task = {
+    chosenDate: '',
+    taskTitle: '',
+    description: '',
+    from: '',
+    to: '',
+  }
+
+  function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
+    let taskTitle = (e.target as HTMLInputElement).value
+    form.taskTitle = taskTitle
+  }
+
+  function setDescription(e: React.ChangeEvent<HTMLInputElement>): void {
+    let description = (e.target as HTMLInputElement).value
+    form.description = description
+  }
+
+  function setFrom(e: React.ChangeEvent<HTMLInputElement>): void {
+    let from = (e.currentTarget as HTMLInputElement).value
+
+    form.from = from
+  }
+
+  function setTo(e: React.ChangeEvent<HTMLInputElement>): void {
+    let to = (e.target as HTMLInputElement).value
+    form.to = to
+  }
+
+  useEffect(() => {
+    form.chosenDate = popup.chosenDate
+  }, [popup.isOpen])
+
   return (
     <div className="overlay">
       <div className="popup rounded-md border bg-white md:w-11/12 lg:max-w-[800px]">
-        <div className="popup-contents px-6 py-8">
+        <div className="px-6 py-8 popup-contents">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-medium">
               Schedule tasks for {popup.chosenDate}
@@ -41,7 +63,7 @@ const Popup: React.FC<Props> = ({
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-dark h-6 w-6"
+                className="w-6 h-6 text-dark"
                 fill="current"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -64,7 +86,7 @@ const Popup: React.FC<Props> = ({
               type="text"
               placeholder="Schedule a meet with the team..."
               id="form_title"
-              className="border-border-light w-full border px-4 py-2 focus:outline-none"
+              className="w-full px-4 py-2 border border-border-light focus:outline-none"
               onChange={setTaskTitle}
             />
           </div>
@@ -77,7 +99,7 @@ const Popup: React.FC<Props> = ({
               type="text"
               placeholder="Get feedback about the progress and look for any blockers"
               id="form_title"
-              className="border-border-light w-full border px-4 py-2 focus:outline-none"
+              className="w-full px-4 py-2 border border-border-light focus:outline-none"
               onChange={setDescription}
             />
           </div>
@@ -86,14 +108,14 @@ const Popup: React.FC<Props> = ({
             <label htmlFor="add_field" className="block pb-2">
               Time Slot
             </label>
-            <div className="flex w-1/2 items-center justify-between">
+            <div className="flex items-center justify-between w-1/2">
               <div>
                 <label htmlFor="from">From</label>
                 <input
                   type="time"
                   placeholder="From"
                   id="fromTime"
-                  className="border-border-light ml-4 border px-4 py-2 focus:outline-none"
+                  className="px-4 py-2 ml-4 border border-border-light focus:outline-none"
                   onChange={setFrom}
                 />
               </div>
@@ -103,7 +125,7 @@ const Popup: React.FC<Props> = ({
                   type="time"
                   placeholder="To"
                   id="toTime"
-                  className="border-border-light ml-4 border px-4 py-2 focus:outline-none"
+                  className="px-4 py-2 ml-4 border border-border-light focus:outline-none"
                   onChange={setTo}
                 />
               </div>
@@ -112,8 +134,8 @@ const Popup: React.FC<Props> = ({
 
           <div className="mt-6">
             <button
-              className="border border-light-theme-primary bg-light-theme-primary px-6 py-3 text-white transition-all duration-150 ease-linear hover:bg-transparent hover:text-light-theme-primary"
-              onClick={() => submitForm(popup.chosenDate)}
+              className="px-6 py-3 text-white transition-all duration-150 ease-linear border border-light-theme-primary bg-light-theme-primary hover:bg-transparent hover:text-light-theme-primary"
+              onClick={() => submitForm(form)}
             >
               Add Task
             </button>

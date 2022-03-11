@@ -1,4 +1,3 @@
-import React from 'react'
 import { Task } from '@/types/task'
 
 interface Props {
@@ -21,6 +20,7 @@ const Tasks: React.FC<Props> = ({ type, tasks, markAsDone }) => {
         {tasks && tasks.length > 1 ? (
           tasks.map((task) => {
             return (
+              // this needs some change, will look at it after making a final task structure
               task.taskTitle !== '' && (
                 <li
                   key={task.taskTitle}
@@ -29,12 +29,12 @@ const Tasks: React.FC<Props> = ({ type, tasks, markAsDone }) => {
                   <span className="block px-5 py-3">{task.taskTitle}</span>
 
                   <button
-                    className="flex items-center justify-center bg-light-theme-primary/25 px-4 py-3 text-light-theme-primary transition-all duration-150 ease-linear hover:bg-green-400 hover:text-white"
+                    className="flex items-center justify-center px-4 py-3 transition-all duration-150 ease-linear bg-light-theme-primary/25 text-light-theme-primary hover:bg-green-400 hover:text-white"
                     onClick={() => markAsDone(task.taskTitle, task.chosenDate)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
+                      className="w-6 h-6"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
