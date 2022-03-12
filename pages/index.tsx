@@ -1,127 +1,59 @@
-import { Tab } from '@/types/tab'
 import { Task } from '@/types/task'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Popup from '@/components/popup'
-import Tasks from '@/components/tasks'
+import { customAlphabet } from 'nanoid'
+import useCalendar from '@/helpers/useCalendar'
 
 const Home: NextPage = () => {
-  /*
-   ** Things required for Calendar
-   ** ! - I'll need to work on the calendar implementation, and make it a bit simpler
-   */
-  const months: Array<string> = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
-  const d: Date = new Date()
-  const days: number = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
-  const currentDate: number = d.getDate()
-  const currentMonth: string = months[d.getMonth()]
-  const currentYear: number = d.getFullYear()
-  const daysInMonth: Array<number | string> = []
-  for (let i = 1; i <= days; i++) {
-    if (i < 10) daysInMonth.push('0' + i.toString())
-    else daysInMonth.push(i)
-  }
-
-  /*
-   ** Required tabs
-   */
-  const tabs: Array<Tab> = [
-    {
-      id: 0,
-      title: "Today's Tasks",
-    },
-    {
-      id: 1,
-      title: 'Upcoming Tasks',
-    },
-    ,
-    {
-      id: 2,
-      title: 'Finished Tasks',
-    },
-  ] as Array<Tab>
-
-  const initialTasksState = [
-    {
-      chosenDate: '',
-      taskTitle: '',
-      description: '',
-      from: '',
-      to: '',
-    },
-  ]
-
-  /*
-   ** And here comes the state
-   */
-  const [currentTab, setCurrentTab] = useState<number>(0)
-  const [todaysTasks, setTodaysTasks] = useState<Array<Task>>(initialTasksState)
-  const [upcomingTasks, setUpcomingTasks] =
-    useState<Array<Task>>(initialTasksState)
-  const [finishedTasks, setFinishedTasks] =
-    useState<Array<Task>>(initialTasksState)
+  const { today, currentMonth, currentYear, daysInMonth } = useCalendar()
+  const [tasks, setTasks] = useState<Array<Task>>([])
   const [popup, setPopup] = useState({
     isOpen: false,
-    chosenDate: '',
+    date: '',
   })
 
-  /*
-   ** Required functions
-   * ! - Form management can be made simpler, please work on that when you are able to
-   */
+  useEffect(() => {
+    // check if there are tasks in local storage, if yes, update the state
+    let storage: string | null = localStorage.getItem('tasks')
+    if (storage) {
+      let tasksInLocal: Array<Task> = JSON.parse(storage).tasks
+      if (tasks.length === 0 && tasksInLocal.length > 0) {
+        setTasks(tasksInLocal)
+      }
+    }
+    // if not add tasks to local storage, if any
+    if (tasks.length > 0)
+      localStorage.setItem('tasks', JSON.stringify({ tasks }))
+  }, [tasks])
+
   function handlePopup(e: React.MouseEvent<HTMLButtonElement>): void {
-    let chosenDate = (e.target as HTMLButtonElement).value
+    let date = (e.target as HTMLButtonElement).value
     if (e.target) {
       setPopup({
         isOpen: true,
-        chosenDate,
+        date,
       })
     }
   }
 
-  function markAsDone(taskTitle: string, chosenDate: string): void {
-    let formattedChosenDate = parseInt(chosenDate.split('/')[0])
-
-    if (formattedChosenDate > currentDate) {
-      let tempTasks = upcomingTasks.filter(
-        (task) => task.taskTitle !== taskTitle
-      )
-
-      setUpcomingTasks(tempTasks)
-    } else if (formattedChosenDate === currentDate) {
-      let tempTasks = todaysTasks.filter((task) => task.taskTitle !== taskTitle)
-
-      setTodaysTasks(tempTasks)
-    }
+  function markAsDone(id: string): void {
+    const updatedTasks = [...tasks]
+    updatedTasks.forEach((task, i) => {
+      if (task.id === id) {
+        updatedTasks[i].isDone = true
+      }
+    })
+    setTasks(updatedTasks)
   }
 
   function submitForm(form: Task): void {
-    if (form.taskTitle !== '') {
-      let formattedChosenDate = parseInt(form.chosenDate.split('/')[0])
-
-      if (formattedChosenDate > currentDate) {
-        setUpcomingTasks([...upcomingTasks, form])
-        setCurrentTab(1)
-      } else if (formattedChosenDate === currentDate) {
-        setTodaysTasks((prevData) => [...prevData, form])
-        setCurrentTab(0)
-      }
-
-      setPopup({ chosenDate: '', isOpen: false })
+    let taskId = customAlphabet('1234567890', 6)
+    if (form.title !== '') {
+      form.id = taskId()
+      setTasks([...tasks, form])
+      setPopup({ date: '', isOpen: false })
     }
   }
 
@@ -131,70 +63,62 @@ const Home: NextPage = () => {
         <title>Simple Task Planner</title>
       </Head>
       <div className="flex items-center w-screen">
-        <div className="flex flex-col items-center justify-center h-screen px-6 mx-auto w-fit">
-          <ul>
-            {tabs &&
-              tabs.map((tab) => (
-                <li
-                  key={tab.id}
-                  className={`font-secondary mb-5 block w-full cursor-pointer border border-black px-5 py-2 text-center text-sm font-medium text-black transition-all duration-150 ease-linear ${
-                    currentTab === tab.id
-                      ? 'border-light-theme-primary bg-light-theme-primary text-white'
-                      : 'border-light-theme-primary/25 text-light-theme-primary hover:bg-light-theme-primary/25'
-                  }`}
-                  onClick={() => setCurrentTab(tab.id)}
-                >
-                  {tab.title}
-                </li>
-              ))}
-          </ul>
-        </div>
-        <div className="mx-auto flex min-h-[470px] w-1/5 flex-col items-start justify-start px-6">
-          {currentTab === 0 ? (
-            <Tasks type="today" tasks={todaysTasks} markAsDone={markAsDone} />
-          ) : currentTab === 1 ? (
-            <Tasks
-              type="upcoming"
-              tasks={upcomingTasks}
-              markAsDone={markAsDone}
-            />
-          ) : (
-            <Tasks
-              type="finished"
-              tasks={finishedTasks}
-              markAsDone={markAsDone}
-            />
-          )}
-        </div>
-        <div className="flex flex-col items-start justify-center w-2/5 h-screen mx-auto">
+        <div className="flex flex-col items-start justify-center h-screen mx-auto min-w-fit">
           <h1 className="text-xl font-semibold">Calendar</h1>
           <h5 className="mt-2 mb-6 text-base font-medium text-black/50">
             {currentMonth} {currentYear}
           </h5>
           <div className="grid justify-start grid-cols-8">
             {daysInMonth.map((day, i) => (
-              <button
+              <div
                 key={i}
-                value={day + '/' + currentMonth + '/' + currentYear}
-                onClick={handlePopup}
-                className={`h-[90px] w-[90px] items-center justify-center border transition-all duration-150 ease-linear ${
-                  day == currentDate
-                    ? 'bg-light-theme-primary font-bold text-white'
-                    : day < currentDate
-                    ? 'bg-light-theme-primary/5'
-                    : 'border-light-theme-primary/10 bg-white hover:bg-light-theme-primary/25 hover:text-light-theme-primary'
-                }`}
-                disabled={day < currentDate ? true : false}
+                className={`relative h-[150px] w-[150px] overflow-hidden border`}
               >
-                {day}
-              </button>
+                <ul className="absolute top-3 left-[5px] -z-0 w-[138px]">
+                  {tasks &&
+                    tasks.map((task) => {
+                      if (
+                        parseInt(task.date.split('/')[0]) === day &&
+                        task.isDone === false
+                      )
+                        return (
+                          <li
+                            key={task.id}
+                            className={`mb-2 h-[25px] overflow-hidden bg-light-theme-primary/75 px-2 text-white`}
+                          >
+                            {task.title}
+                          </li>
+                        )
+                    })}
+                </ul>
+                <button
+                  value={day + '/' + currentMonth + '/' + currentYear}
+                  onClick={handlePopup}
+                  className={`duration-15 0 absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center bg-white/30 transition-all ease-linear ${
+                    day == today
+                      ? 'border-2 border-light-theme-primary/50 hover:font-semibold hover:text-light-theme-primary'
+                      : day > today
+                      ? 'hover:bg-light-theme-primary/25 hover:font-semibold hover:text-white'
+                      : 'bg-light-theme-primary/5'
+                  }`}
+                  disabled={day < today ? true : false}
+                >
+                  {day}
+                </button>
+              </div>
             ))}
           </div>
         </div>
       </div>
 
       {popup.isOpen ? (
-        <Popup popup={popup} setPopup={setPopup} submitForm={submitForm} />
+        <Popup
+          popup={popup}
+          setPopup={setPopup}
+          submitForm={submitForm}
+          tasks={tasks}
+          markAsDone={markAsDone}
+        />
       ) : null}
     </>
   )
