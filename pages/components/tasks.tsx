@@ -8,17 +8,20 @@ interface Props {
 }
 
 const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
-  const { today } = useCalendar()
-  const formattedDate = parseInt(date.split('/')[0])
+  let { today } = useCalendar()
+  let formattedDate: number = 0
+  let filteredTasks: Array<Task> = []
+  if (date) formattedDate = parseInt(date.split('/')[0])
+  if (tasks && tasks.length > 0)
+    filteredTasks = tasks.filter(
+      (task) =>
+        parseInt(task.date.split('/')[0]) === formattedDate &&
+        task.isDone === false
+    )
 
-  const filteredTasks = tasks.filter(
-    (task) =>
-      parseInt(task.date.split('/')[0]) === formattedDate &&
-      task.isDone === false
-  )
   return (
     <>
-      <h1 className="mb-6 text-xl font-semibold">
+      <h1 className="mb-6 text-xl font-semibold dark:text-dark-theme-heading">
         {formattedDate === today
           ? `Today's Tasks`
           : formattedDate === today + 1
@@ -30,13 +33,15 @@ const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
           filteredTasks.map((task) => (
             <li
               key={task.id}
-              className="my-3 flex min-w-[300px] items-center justify-between border bg-white"
+              className="my-3 flex min-w-[300px] items-center justify-between border bg-white dark:border-dark-theme-primary dark:bg-transparent"
             >
-              <span className="block px-5 py-3">{task.title}</span>
+              <span className="block px-5 py-3 dark:text-dark-theme-heading">
+                {task.title}
+              </span>
 
               <button
                 type="button"
-                className="flex items-center justify-center px-4 py-3 transition-all duration-150 ease-linear bg-light-theme-primary/25 text-light-theme-primary hover:bg-green-400 hover:text-white"
+                className="flex items-center justify-center px-4 py-3 transition-all duration-150 ease-linear bg-light-theme-primary/25 text-light-theme-primary hover:bg-green-400 hover:text-white dark:bg-dark-theme-primary/50 dark:text-white dark:hover:bg-dark-theme-primary dark:hover:text-green-400"
                 onClick={() => markAsDone(task.id)}
               >
                 <svg
@@ -57,7 +62,7 @@ const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
             </li>
           ))
         ) : (
-          <li>No tasks found</li>
+          <li className="dark:text-dark-theme-body">No tasks found</li>
         )}
       </ul>
     </>

@@ -61,13 +61,13 @@ const Popup: React.FC<Props> = ({
   }, [popup.isOpen])
 
   return (
-    <div className="overlay">
-      <div className="flex bg-white border rounded-md popup md:w-11/12 lg:max-w-5xl">
+    <>
+      <div className="flex bg-white border rounded-md popup dark:border-transparent dark:bg-dark-background md:w-11/12 lg:max-w-6xl">
         <div className="w-3/5 px-6 py-8 popup-content">
           <div className="flex items-center justify-start">
             <button
               onClick={() => setPopup({ ...popup, isOpen: false })}
-              className="flex items-center"
+              className="flex items-center dark:text-dark-theme-heading"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -84,59 +84,72 @@ const Popup: React.FC<Props> = ({
                 />
               </svg>
             </button>
-            <h3 className="ml-4 text-xl font-medium">
+            <h3 className="ml-4 text-xl font-medium dark:text-dark-theme-heading">
               Schedule tasks on {popup.date}
             </h3>
           </div>
 
           <div className="mt-6">
-            <label htmlFor="form_title" className="block pb-2">
+            <label
+              htmlFor="form_title"
+              className="block pb-2 dark:text-dark-theme-heading"
+            >
               What's the task?
             </label>
             <input
               type="text"
               placeholder="Schedule a meet with the team..."
               id="form_title"
-              className="w-full px-4 py-2 border border-border-light focus:outline-none"
+              className="w-full px-4 py-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
               onChange={setTaskTitle}
             />
           </div>
 
           <div className="mt-6">
-            <label htmlFor="add_field" className="block pb-2">
+            <label
+              htmlFor="add_field"
+              className="block pb-2 dark:text-dark-theme-heading"
+            >
               Any message you want to add to the task?
             </label>
             <input
               type="text"
               placeholder="Get feedback about the progress and look for any blockers"
               id="form_title"
-              className="w-full px-4 py-2 border border-border-light focus:outline-none"
+              className="w-full px-4 py-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
               onChange={setDescription}
             />
           </div>
 
           <div className="mt-6">
-            <label htmlFor="add_field" className="block pb-2">
+            <label
+              htmlFor="add_field"
+              className="block pb-2 dark:text-dark-theme-heading"
+            >
               Time Slot
             </label>
-            <div className="flex items-center justify-between w-1/2">
+            <div className="flex items-center justify-between w-1/3">
               <div>
-                <label htmlFor="from">From</label>
+                <label htmlFor="from" className="dark:text-dark-theme-heading">
+                  From
+                </label>
                 <input
                   type="time"
                   placeholder="From"
                   id="fromTime"
-                  className="px-4 py-2 ml-4 border border-border-light focus:outline-none"
+                  className="px-4 py-2 mt-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
                   onChange={setFrom}
                 />
               </div>
-              <div>
-                <label htmlFor="to">To</label>
+              <div className="ml-4 ">
+                <label htmlFor="to" className="dark:text-dark-theme-heading">
+                  To
+                </label>
                 <input
                   type="time"
                   placeholder="To"
                   id="toTime"
-                  className="px-4 py-2 ml-4 border border-border-light focus:outline-none"
+                  className="px-4 py-2 mt-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
                   onChange={setTo}
                 />
               </div>
@@ -146,7 +159,7 @@ const Popup: React.FC<Props> = ({
           <div className="mt-6">
             <button
               type="button"
-              className="px-6 py-3 text-white transition-all duration-150 ease-linear border border-light-theme-primary bg-light-theme-primary hover:bg-transparent hover:text-light-theme-primary"
+              className="px-6 py-3 text-white transition-all duration-150 ease-linear border border-light-theme-primary bg-light-theme-primary hover:bg-transparent hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary dark:text-dark-theme-heading dark:hover:bg-transparent "
               onClick={() => submitForm(form)}
             >
               Add Task
@@ -157,7 +170,8 @@ const Popup: React.FC<Props> = ({
           <Tasks tasks={tasks} markAsDone={markAsDone} date={popup.date} />
         </div>
       </div>
-    </div>
+      <div className="overlay"></div>
+    </>
   )
 }
 

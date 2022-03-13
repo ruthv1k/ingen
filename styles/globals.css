@@ -7,11 +7,23 @@
 :root {
   --light-background: 240, 243, 255;
   --light-theme-primary: 63, 60, 187;
+  --dark-background: 28, 28, 39;
+  --dark-overlay: 0, 0, 0;
 }
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: rgb(var(--light-background));
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: rgb(var(--light-background));
+  }
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: rgb(var(--dark-background));
+  }
 }
 
 /* popup */
@@ -33,6 +45,25 @@ body {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.25);
   z-index: 10;
+}
+
+.dark .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--dark-overlay), 0.8);
+  backdrop-filter: blur(20px);
+  z-index: 10;
+}
+
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .dark .overlay {
+    background-color: rgba(var(--dark-overlay), 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
 }
 
 @media only screen and (max-width: 499px) {

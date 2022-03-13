@@ -64,15 +64,17 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex items-center w-screen">
         <div className="flex flex-col items-start justify-center h-screen mx-auto min-w-fit">
-          <h1 className="text-xl font-semibold">Calendar</h1>
-          <h5 className="mt-2 mb-6 text-base font-medium text-black/50">
+          <h1 className="text-xl font-semibold dark:text-dark-theme-heading">
+            Calendar
+          </h1>
+          <h5 className="mt-2 mb-6 text-base font-medium text-black/50 dark:text-dark-theme-body">
             {currentMonth} {currentYear}
           </h5>
           <div className="grid justify-start grid-cols-8">
             {daysInMonth.map((day, i) => (
               <div
                 key={i}
-                className={`relative h-[150px] w-[150px] overflow-hidden border`}
+                className={`relative h-[150px] w-[150px] overflow-hidden `}
               >
                 <ul className="absolute top-3 left-[5px] -z-0 w-[138px]">
                   {tasks &&
@@ -94,12 +96,12 @@ const Home: NextPage = () => {
                 <button
                   value={day + '/' + currentMonth + '/' + currentYear}
                   onClick={handlePopup}
-                  className={`duration-15 0 absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center bg-white/30 transition-all ease-linear ${
+                  className={`absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center bg-white/30 transition-all duration-150 ease-linear  ${
                     day == today
-                      ? 'border-2 border-light-theme-primary/50 hover:font-semibold hover:text-light-theme-primary'
+                      ? 'border-2 border-light-theme-primary/50 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50'
                       : day > today
-                      ? 'hover:bg-light-theme-primary/25 hover:font-semibold hover:text-white'
-                      : 'bg-light-theme-primary/5'
+                      ? 'border border-light-theme-primary/50 hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50'
+                      : 'border bg-light-theme-primary/50 font-normal text-dark-theme-primary/50 dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25'
                   }`}
                   disabled={day < today ? true : false}
                 >
