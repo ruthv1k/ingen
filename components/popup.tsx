@@ -1,6 +1,7 @@
+import { useEffect, useReducer } from 'react'
+
 import { Task } from '@/types/task'
-import { useEffect } from 'react'
-import Tasks from '@/components/tasks'
+import Tasks from 'components/tasks'
 
 interface Props {
   popup: {
@@ -18,6 +19,30 @@ interface Props {
   markAsDone: (id: string) => void
 }
 
+type ReducerAction =
+  | { type: 'setDate'; date: string }
+  | { type: 'setTitle'; title: string }
+  | { type: 'setDescription'; desc: string }
+  | { type: 'setFrom'; fromTime: string }
+  | { type: 'setTo'; toTime: string }
+
+function reducer(state: Task, action: ReducerAction): Task {
+  switch (action.type) {
+    case 'setDate':
+      return { ...state, date: action.date }
+    case 'setTitle':
+      return { ...state, title: action.title }
+    case 'setDescription':
+      return { ...state, description: action.desc }
+    case 'setFrom':
+      return { ...state, fromTime: action.fromTime }
+    case 'setTo':
+      return { ...state, toTime: action.toTime }
+    default:
+      throw new Error()
+  }
+}
+
 const Popup: React.FC<Props> = ({
   popup,
   setPopup,
@@ -25,7 +50,7 @@ const Popup: React.FC<Props> = ({
   tasks,
   markAsDone,
 }) => {
-  let form: Task = {
+  let initialState: Task = {
     id: '',
     title: '',
     description: '',
@@ -35,30 +60,31 @@ const Popup: React.FC<Props> = ({
     isDone: false,
   }
 
+  const [form, setForm] = useReducer(reducer, initialState)
+
   function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
     let taskTitle = (e.target as HTMLInputElement).value
-    form.title = taskTitle
+    setForm({ type: 'setTitle', title: taskTitle })
   }
 
   function setDescription(e: React.ChangeEvent<HTMLInputElement>): void {
     let description = (e.target as HTMLInputElement).value
-    form.description = description
+    setForm({ type: 'setDescription', desc: description })
   }
 
   function setFrom(e: React.ChangeEvent<HTMLInputElement>): void {
     let from = (e.currentTarget as HTMLInputElement).value
-
-    form.fromTime = from
+    setForm({ type: 'setFrom', fromTime: from })
   }
 
   function setTo(e: React.ChangeEvent<HTMLInputElement>): void {
     let to = (e.target as HTMLInputElement).value
-    form.toTime = to
+    setForm({ type: 'setTo', toTime: to })
   }
 
   useEffect(() => {
-    form.date = popup.date
-  }, [popup.isOpen])
+    setForm({ type: 'setDate', date: popup.date })
+  }, [popup.isOpen, popup.date])
 
   return (
     <>
@@ -94,7 +120,7 @@ const Popup: React.FC<Props> = ({
               htmlFor="form_title"
               className="block pb-2 dark:text-dark-theme-heading"
             >
-              What's the task?
+              What{`'`}s the task?
             </label>
             <input
               type="text"

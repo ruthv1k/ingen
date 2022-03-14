@@ -1,9 +1,15 @@
+import { useEffect, useState } from 'react'
+import Head from 'next/head'
+import { customAlphabet } from 'nanoid'
+
+// types
 import { Task } from '@/types/task'
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useEffect, useState } from 'react'
+
+// components
 import Popup from '@/components/popup'
-import { customAlphabet } from 'nanoid'
+
+// helpers
 import useCalendar from '@/helpers/useCalendar'
 
 const Home: NextPage = () => {
@@ -113,7 +119,7 @@ const Home: NextPage = () => {
         </div>
       </div>
 
-      {popup.isOpen ? (
+      {popup.isOpen && (
         <Popup
           popup={popup}
           setPopup={setPopup}
@@ -121,7 +127,7 @@ const Home: NextPage = () => {
           tasks={tasks}
           markAsDone={markAsDone}
         />
-      ) : null}
+      )}
     </>
   )
 }
