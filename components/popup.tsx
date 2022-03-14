@@ -2,6 +2,7 @@ import { useEffect, useReducer } from 'react'
 
 import { Task } from '@/types/task'
 import Tasks from 'components/tasks'
+import useCalendar from '@/helpers/useCalendar'
 
 interface Props {
   popup: {
@@ -59,7 +60,8 @@ const Popup: React.FC<Props> = ({
     toTime: '',
     isDone: false,
   }
-
+  const { today } = useCalendar()
+  const formattedDate = parseInt(popup.date.split('/')[0])
   const [form, setForm] = useReducer(reducer, initialState)
 
   function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -111,7 +113,11 @@ const Popup: React.FC<Props> = ({
               </svg>
             </button>
             <h3 className="ml-4 text-xl font-medium dark:text-dark-theme-heading">
-              Schedule tasks on {popup.date}
+              {formattedDate === today
+                ? `Schedule today's tasks`
+                : formattedDate === today + 1
+                ? `Schedule tomorrow's tasks`
+                : `Schedule tasks on ${popup.date}`}
             </h3>
           </div>
 
