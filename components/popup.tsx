@@ -2,19 +2,13 @@ import { useEffect, useReducer } from 'react'
 
 import { Task } from '@/types/task'
 import Tasks from 'components/tasks'
-import useCalendar from '@/helpers/useCalendar'
 
 interface Props {
   popup: {
     isOpen: boolean
     date: string
   }
-  setPopup: React.Dispatch<
-    React.SetStateAction<{
-      isOpen: boolean
-      date: string
-    }>
-  >
+  closePopup: () => void
   submitForm: (form: Task) => void
   tasks: Array<Task>
   markAsDone: (id: string) => void
@@ -46,7 +40,7 @@ function reducer(state: Task, action: ReducerAction): Task {
 
 const Popup: React.FC<Props> = ({
   popup,
-  setPopup,
+  closePopup,
   submitForm,
   tasks,
   markAsDone,
@@ -60,8 +54,7 @@ const Popup: React.FC<Props> = ({
     toTime: '',
     isDone: false,
   }
-  const { today } = useCalendar()
-  const formattedDate = parseInt(popup.date.split('/')[0])
+
   const [form, setForm] = useReducer(reducer, initialState)
 
   function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -94,7 +87,7 @@ const Popup: React.FC<Props> = ({
         <div className="w-3/5 px-6 py-8 popup-content">
           <div className="flex items-center justify-start">
             <button
-              onClick={() => setPopup({ ...popup, isOpen: false })}
+              onClick={closePopup}
               className="flex items-center dark:text-dark-theme-heading"
             >
               <svg
@@ -113,11 +106,7 @@ const Popup: React.FC<Props> = ({
               </svg>
             </button>
             <h3 className="ml-4 text-xl font-medium dark:text-dark-theme-heading">
-              {formattedDate === today
-                ? `Schedule today's tasks`
-                : formattedDate === today + 1
-                ? `Schedule tomorrow's tasks`
-                : `Schedule tasks on ${popup.date}`}
+              Schedule tasks on {popup.date}
             </h3>
           </div>
 

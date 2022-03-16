@@ -11,14 +11,12 @@ import Popup from '@/components/popup'
 
 // helpers
 import useCalendar from '@/helpers/useCalendar'
+import { usePopup } from 'hooks/usePopup'
 
 const Home: NextPage = () => {
-  const { today, currentMonth, currentYear, daysInMonth } = useCalendar()
   const [tasks, setTasks] = useState<Array<Task>>([])
-  const [popup, setPopup] = useState({
-    isOpen: false,
-    date: '',
-  })
+  const { today, currentMonth, currentYear, daysInMonth } = useCalendar()
+  const { popup, openPopup, closePopup } = usePopup()
 
   useEffect(() => {
     // check if there are tasks in local storage, if yes, update the state
@@ -37,10 +35,7 @@ const Home: NextPage = () => {
   function handlePopup(e: React.MouseEvent<HTMLButtonElement>): void {
     let date = (e.target as HTMLButtonElement).value
     if (e.target) {
-      setPopup({
-        isOpen: true,
-        date,
-      })
+      openPopup(date)
     }
   }
 
@@ -59,14 +54,14 @@ const Home: NextPage = () => {
     if (form.title !== '') {
       form.id = taskId()
       setTasks([...tasks, form])
-      setPopup({ date: '', isOpen: false })
+      closePopup()
     }
   }
 
   return (
     <>
       <Head>
-        <title>Ingen - Manage your time efficiently</title>
+        <title>Simple Task Planner</title>
       </Head>
       <div className="flex items-center w-screen">
         <div className="flex flex-col items-start justify-center h-screen mx-auto min-w-fit">
@@ -122,7 +117,7 @@ const Home: NextPage = () => {
       {popup.isOpen && (
         <Popup
           popup={popup}
-          setPopup={setPopup}
+          closePopup={closePopup}
           submitForm={submitForm}
           tasks={tasks}
           markAsDone={markAsDone}
