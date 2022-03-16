@@ -191,7 +191,7 @@ const Popup: React.FC<Props> = ({
           <Tasks tasks={tasks} markAsDone={markAsDone} date={popup.date} />
         </div>
       </div>
-      <div className="overlay"></div>
+      <div className="overlay" onClick={closePopup}></div>
     </>
   )
 }

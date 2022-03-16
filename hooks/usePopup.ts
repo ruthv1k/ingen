@@ -26,7 +26,7 @@ export const usePopup = (): Props => {
 
   const closePopup = useCallback(() => setPopup(initialState), [])
 
-  const handleKeydown = (e: any) => {
+  const handleKeydown = (e: { key: string; keyCode: number }) => {
     if (e.key === 'Escape' || e.keyCode === 27) {
       closePopup()
     }
