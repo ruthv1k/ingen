@@ -28,16 +28,26 @@ const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
           ? `Tomorrow's Tasks`
           : `Tasks on ${date}`}
       </h1>
-      <ul className="list-none">
+      <ul className="list-none overflow-y-scroll md:max-h-[400px] md:pr-4">
         {filteredTasks.length > 0 ? (
           filteredTasks.map((task) => (
             <li
               key={task.id}
-              className="my-3 flex min-w-[300px] items-center justify-between border bg-white dark:border-dark-theme-primary dark:bg-transparent"
+              className="mb-4 flex min-w-[300px] items-start justify-between border bg-white p-4 dark:border-dark-theme-primary dark:bg-transparent"
             >
-              <span className="block px-5 py-3 dark:text-dark-theme-heading">
-                {task.title}
-              </span>
+              <div className="md:pr-4">
+                <span className="text-xs dark:text-dark-theme-body">
+                  {task.fromTime && task.toTime
+                    ? `${task.fromTime} - ${task.toTime}`
+                    : ''}
+                </span>
+                <h5 className="mt-1 dark:text-dark-theme-heading">
+                  {task.title}
+                </h5>
+                <p className="mt-1 text-xs dark:text-dark-theme-body">
+                  {task.description}
+                </p>
+              </div>
 
               <button
                 type="button"
