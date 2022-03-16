@@ -1,2 +1,2 @@
-# simple-task-planner
-A simple task planner to manage your time efficiently
+# Ingen
+Ingen is a collection of productivity tools to enhance and focus on your day-to-day tasks 
