@@ -66,7 +66,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Simple Task Planner</title>
+        <title>Ingen - Manage your time efficiently</title>
       </Head>
       <div className="flex items-center w-screen">
         <div className="flex flex-col items-start justify-center h-screen mx-auto min-w-fit">
