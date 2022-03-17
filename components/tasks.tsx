@@ -28,7 +28,7 @@ const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
           ? `Tomorrow's Tasks`
           : `Tasks on ${date}`}
       </h1>
-      <ul className="list-none overflow-y-scroll md:max-h-[400px] md:pr-4">
+      <ul className={`list-none ${filteredTasks.length > 3 ? 'overflow-y-scroll md:max-h-[400px]' : '' } md:pr-4`}>
         {filteredTasks.length > 0 ? (
           filteredTasks.map((task) => (
             <li

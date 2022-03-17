@@ -99,7 +99,7 @@ const Home: NextPage = () => {
                   value={day + '/' + currentMonth + '/' + currentYear}
                   onClick={handlePopup}
                   className={`absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center bg-white/30 transition-all duration-150 ease-linear  ${
-                    day == today
+                    day === today
                       ? 'border-2 border-light-theme-primary/50 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50'
                       : day > today
                       ? 'border border-light-theme-primary/50 hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50'
