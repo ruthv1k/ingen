@@ -18,7 +18,7 @@ export default function useCalendar() {
   const today: number = d.getDate()
   const currentMonth: string = months[d.getMonth()]
   const currentYear: number = d.getFullYear()
-  const daysInMonth: Array<number | string> = findDaysInMonth(days)
+  const daysInMonth: Array<number> = findDaysInMonth(days)
 
   return {
     months,
@@ -31,10 +31,9 @@ export default function useCalendar() {
 }
 
 function findDaysInMonth(noOfDays: number) {
-  let daysInMonth = []
+  let daysInMonth: Array<number> = []
   for (let i = 1; i <= noOfDays; i++) {
-    if (i < 10) daysInMonth.push('0' + i.toString())
-    else daysInMonth.push(i)
+    daysInMonth.push(i)
   }
 
   return daysInMonth

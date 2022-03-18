@@ -72,6 +72,7 @@ const Home: NextPage = () => {
           <h5 className="mt-2 mb-6 text-base font-medium text-black/50 dark:text-dark-theme-body">
             {currentMonth} {currentYear}
           </h5>
+
           <div className="grid justify-start grid-cols-8">
             {daysInMonth.map((day, i) => (
               <div
@@ -95,6 +96,7 @@ const Home: NextPage = () => {
                         )
                     })}
                 </ul>
+
                 <button
                   value={day + '/' + currentMonth + '/' + currentYear}
                   onClick={handlePopup}
@@ -105,9 +107,9 @@ const Home: NextPage = () => {
                       ? 'border border-light-theme-primary/50 hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50'
                       : 'border bg-light-theme-primary/50 font-normal text-dark-theme-primary/50 dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25'
                   }`}
-                  disabled={day < today ? true : false}
+                  disabled={day < today}
                 >
-                  {day}
+                  {day.toString()}
                 </button>
               </div>
             ))}
