@@ -1,4 +1,6 @@
-export default function useCalendar() {
+
+
+export default function useCalendar(date: string) {
   const months: Array<string> = [
     'January',
     'February',
@@ -13,12 +15,13 @@ export default function useCalendar() {
     'November',
     'December',
   ]
-  const d: Date = new Date()
-  const days: number = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
-  const today: number = d.getDate()
-  const currentMonth: string = months[d.getMonth()]
-  const currentYear: number = d.getFullYear()
-  const daysInMonth: Array<number | string> = findDaysInMonth(days)
+
+  let d: Date = new Date(date)
+  let days: number = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
+  let today: number = d.getDate()
+  let currentMonth: string = months[d.getMonth()]
+  let currentYear: number = d.getFullYear()
+  let daysInMonth: Array<number | string> = findDaysInMonth(days)
 
   return {
     months,

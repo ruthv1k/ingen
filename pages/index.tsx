@@ -4,7 +4,6 @@ import { customAlphabet } from 'nanoid'
 
 // types
 import { Task } from '@/types/task'
-import type { NextPage } from 'next'
 
 // components
 import Popup from '@/components/popup'
@@ -13,9 +12,13 @@ import Popup from '@/components/popup'
 import useCalendar from '@/helpers/useCalendar'
 import { usePopup } from 'hooks/usePopup'
 
-const Home: NextPage = () => {
+interface Props {
+  date: string
+}
+
+const Home: React.FC<Props> = ({ date }) => {
   const [tasks, setTasks] = useState<Array<Task>>([])
-  const { today, currentMonth, currentYear, daysInMonth } = useCalendar()
+  const { today, currentMonth, currentYear, daysInMonth } = useCalendar(date)
   const { popup, openPopup, closePopup } = usePopup()
 
   useEffect(() => {
@@ -126,6 +129,16 @@ const Home: NextPage = () => {
       )}
     </>
   )
+}
+
+export async function getStaticProps() {
+  const date = new Date()
+  return {
+    props: {
+      date: date.toDateString()
+    },
+    revalidate: 72000
+  }
 }
 
 export default Home
