@@ -2,7 +2,6 @@ import { useEffect, useReducer } from 'react'
 
 import { Task } from '@/types/task'
 import Tasks from 'components/tasks'
-import useCalendar from '@/helpers/useCalendar'
 
 interface Props {
   popup: {
@@ -13,6 +12,7 @@ interface Props {
   submitForm: (form: Task) => void
   tasks: Array<Task>
   markAsDone: (id: string) => void
+  today: number
 }
 
 type ReducerAction =
@@ -41,10 +41,11 @@ function reducer(state: Task, action: ReducerAction): Task {
 
 const Popup: React.FC<Props> = ({
   popup,
+  tasks,
+  today,
   closePopup,
   submitForm,
-  tasks,
-  markAsDone,
+  markAsDone
 }) => {
   let initialState: Task = {
     id: '',
@@ -53,11 +54,10 @@ const Popup: React.FC<Props> = ({
     date: '',
     fromTime: '',
     toTime: '',
-    isDone: false,
+    isDone: false
   }
 
   const [form, setForm] = useReducer(reducer, initialState)
-  const { today } = useCalendar()
   const formattedDate = parseInt(popup.date.split('/')[0])
 
   function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -195,7 +195,7 @@ const Popup: React.FC<Props> = ({
           </div>
         </div>
         <div className="w-2/5 px-6 py-8 ">
-          <Tasks tasks={tasks} markAsDone={markAsDone} date={popup.date} />
+          <Tasks tasks={tasks} markAsDone={markAsDone} date={popup.date} today={today} />
         </div>
       </div>
       <div className="overlay" onClick={closePopup}></div>

@@ -3,12 +3,12 @@ import { Task } from '@/types/task'
 
 interface Props {
   tasks: Array<Task>
-  markAsDone: (id: string) => void
+  today: number
   date: string
+  markAsDone: (id: string) => void
 }
 
-const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
-  let { today } = useCalendar()
+const Tasks: React.FC<Props> = ({ tasks, date, today, markAsDone }) => {
   let formattedDate: number = 0
   let filteredTasks: Array<Task> = []
   if (date) formattedDate = parseInt(date.split('/')[0])

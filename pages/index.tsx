@@ -123,9 +123,10 @@ const Home: React.FC<Props> = ({ date }) => {
       {popup.isOpen && (
         <Popup
           popup={popup}
+          tasks={tasks}
+          today={today}
           closePopup={closePopup}
           submitForm={submitForm}
-          tasks={tasks}
           markAsDone={markAsDone}
         />
       )}
