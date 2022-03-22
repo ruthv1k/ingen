@@ -1,6 +1,6 @@
 
 
-export default function useCalendar(date: string) {
+export default function useCalendar(d: Date) {
   const months: Array<string> = [
     'January',
     'February',
@@ -15,7 +15,6 @@ export default function useCalendar(date: string) {
     'November',
     'December',
   ]
-  const d: Date = new Date(date)
   const days: number = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
   const today: number = d.getDate()
   const currentMonth: string = months[d.getMonth()]

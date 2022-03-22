@@ -11,17 +11,16 @@ import Popup from '@/components/popup'
 // helpers
 import useCalendar from '@/helpers/useCalendar'
 import { usePopup } from 'hooks/usePopup'
+import { NextPage } from 'next'
 
-interface Props {
-  date: string
-}
-
-const Home: React.FC<Props> = ({ date }) => {
+const Home: NextPage = () => {
+  const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [tasks, setTasks] = useState<Array<Task>>([])
-  const { today, currentMonth, currentYear, daysInMonth } = useCalendar(date)
+  const { today, currentMonth, currentYear, daysInMonth } = useCalendar(currentDate)
   const { popup, openPopup, closePopup } = usePopup()
 
   useEffect(() => {
+    setCurrentDate(new Date())
     // check if there are tasks in local storage, if yes, update the state
     let storage: string | null = localStorage.getItem('tasks')
     if (storage) {
@@ -33,7 +32,7 @@ const Home: React.FC<Props> = ({ date }) => {
     // if not add tasks to local storage, if any
     if (tasks.length > 0)
       localStorage.setItem('tasks', JSON.stringify({ tasks }))
-  }, [tasks])
+  }, [tasks, currentDate])
 
   function handlePopup(e: React.MouseEvent<HTMLButtonElement>): void {
     let date = (e.target as HTMLButtonElement).value
@@ -132,16 +131,6 @@ const Home: React.FC<Props> = ({ date }) => {
       )}
     </>
   )
-}
-
-export async function getStaticProps() {
-  const date = new Date()
-  return {
-    props: {
-      date: date.toDateString()
-    },
-    revalidate: 72000
-  }
 }
 
 export default Home
