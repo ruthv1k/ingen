@@ -14,13 +14,19 @@ import { usePopup } from 'hooks/usePopup'
 import { NextPage } from 'next'
 
 const Home: NextPage = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date())
+  const [currentDate, setCurrentDate] = useState<Date | null>(null)
   const [tasks, setTasks] = useState<Array<Task>>([])
-  const { today, currentMonth, currentYear, daysInMonth } = useCalendar(currentDate)
+  const { today, currentMonth, currentYear, daysInMonth } =
+    useCalendar(currentDate)
   const { popup, openPopup, closePopup } = usePopup()
 
   useEffect(() => {
+    // to debug today and currentDate
+    console.log('currentDate', currentDate)
+    console.log('today', today)
+
     setCurrentDate(new Date())
+
     // check if there are tasks in local storage, if yes, update the state
     let storage: string | null = localStorage.getItem('tasks')
     if (storage) {
@@ -32,7 +38,7 @@ const Home: NextPage = () => {
     // if not add tasks to local storage, if any
     if (tasks.length > 0)
       localStorage.setItem('tasks', JSON.stringify({ tasks }))
-  }, [tasks, currentDate])
+  }, [tasks])
 
   function handlePopup(e: React.MouseEvent<HTMLButtonElement>): void {
     let date = (e.target as HTMLButtonElement).value
@@ -66,8 +72,8 @@ const Home: NextPage = () => {
         <title>Ingen - Manage your time efficiently</title>
       </Head>
 
-      <div className="flex items-center w-screen">
-        <div className="flex flex-col items-start justify-center h-screen mx-auto min-w-fit">
+      <div className="flex w-screen items-center">
+        <div className="mx-auto flex h-screen min-w-fit flex-col items-start justify-center">
           <h1 className="text-xl font-semibold dark:text-dark-theme-heading">
             Calendar
           </h1>
@@ -75,15 +81,38 @@ const Home: NextPage = () => {
             {currentMonth} {currentYear}
           </h5>
 
-          <div className="grid justify-start grid-cols-8">
+          <div className="grid grid-cols-8 justify-start">
             {daysInMonth.map((day, i) => (
               <div
                 key={i}
                 className={`relative h-[150px] w-[150px] overflow-hidden `}
               >
-                <ul className="absolute top-3 left-[5px] -z-0 w-[138px]">
-                  {tasks &&
-                    tasks.map((task) => {
+                {day < today ? (
+                  <button
+                    value={day + '/' + currentMonth + '/' + currentYear}
+                    onClick={handlePopup}
+                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border bg-white/30 bg-light-theme-primary/50 font-normal text-dark-theme-primary/50 transition-all duration-150 ease-linear dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25"
+                    disabled
+                  >
+                    {day.toString()}
+                  </button>
+                ) : (
+                  <button
+                    value={day + '/' + currentMonth + '/' + currentYear}
+                    onClick={handlePopup}
+                    className={`absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center bg-white/30 transition-all duration-150 ease-linear  ${
+                      day === today
+                        ? 'border-2 border-light-theme-primary/50 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50'
+                        : 'border border-light-theme-primary/50 hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50'
+                    }`}
+                  >
+                    {day.toString()}
+                  </button>
+                )}
+
+                {tasks && tasks.length > 0 && (
+                  <ul className="absolute top-3 left-[5px] -z-0 w-[138px]">
+                    {tasks.map((task) => {
                       if (
                         parseInt(task.date.split('/')[0]) === day &&
                         task.isDone === false
@@ -97,22 +126,8 @@ const Home: NextPage = () => {
                           </li>
                         )
                     })}
-                </ul>
-
-                <button
-                  value={day + '/' + currentMonth + '/' + currentYear}
-                  onClick={handlePopup}
-                  className={`absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center bg-white/30 transition-all duration-150 ease-linear  ${
-                    day === today
-                      ? 'border-2 border-light-theme-primary/50 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50'
-                      : day > today
-                      ? 'border border-light-theme-primary/50 hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50'
-                      : 'border bg-light-theme-primary/50 font-normal text-dark-theme-primary/50 dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25'
-                  }`}
-                  disabled={day < today}
-                >
-                  {day.toString()}
-                </button>
+                  </ul>
+                )}
               </div>
             ))}
           </div>
