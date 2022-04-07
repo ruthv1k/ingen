@@ -1,14 +1,15 @@
-import useCalendar from '@/helpers/useCalendar'
+import CalendarContext from 'context/CalendarContext'
 import { Task } from '@/types/task'
+import { useContext } from 'react'
 
 interface Props {
   tasks: Array<Task>
-  today: number
   date: string
   markAsDone: (id: string) => void
 }
 
-const Tasks: React.FC<Props> = ({ tasks, date, today, markAsDone }) => {
+const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
+  const { todaysDate } = useContext(CalendarContext)
   let formattedDate: number = 0
   let filteredTasks: Array<Task> = []
   if (date) formattedDate = parseInt(date.split('/')[0])
@@ -22,13 +23,17 @@ const Tasks: React.FC<Props> = ({ tasks, date, today, markAsDone }) => {
   return (
     <>
       <h1 className="mb-6 text-xl font-semibold dark:text-dark-theme-heading">
-        {formattedDate === today
+        {formattedDate === todaysDate
           ? `Today's Tasks`
-          : formattedDate === today + 1
+          : formattedDate === todaysDate + 1
           ? `Tomorrow's Tasks`
           : `Tasks on ${date}`}
       </h1>
-      <ul className={`list-none ${filteredTasks.length > 3 ? 'overflow-y-scroll md:max-h-[400px]' : '' } md:pr-4`}>
+      <ul
+        className={`list-none ${
+          filteredTasks.length > 3 ? 'overflow-y-scroll md:max-h-[400px]' : ''
+        } md:pr-4`}
+      >
         {filteredTasks.length > 0 ? (
           filteredTasks.map((task) => (
             <li
@@ -51,12 +56,12 @@ const Tasks: React.FC<Props> = ({ tasks, date, today, markAsDone }) => {
 
               <button
                 type="button"
-                className="flex items-center justify-center px-4 py-3 transition-all duration-150 ease-linear bg-light-theme-primary/25 text-light-theme-primary hover:bg-green-400 hover:text-white dark:bg-dark-theme-primary/50 dark:text-white dark:hover:bg-dark-theme-primary dark:hover:text-green-400"
+                className="flex items-center justify-center bg-light-theme-primary/25 px-4 py-3 text-light-theme-primary transition-all duration-150 ease-linear hover:bg-green-400 hover:text-white dark:bg-dark-theme-primary/50 dark:text-white dark:hover:bg-dark-theme-primary dark:hover:text-green-400"
                 onClick={() => markAsDone(task.id)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

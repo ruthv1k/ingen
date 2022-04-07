@@ -1,7 +1,8 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useContext } from 'react'
 
 import { Task } from '@/types/task'
 import Tasks from 'components/tasks'
+import CalendarContext from 'context/CalendarContext'
 
 interface Props {
   popup: {
@@ -12,7 +13,6 @@ interface Props {
   submitForm: (form: Task) => void
   tasks: Array<Task>
   markAsDone: (id: string) => void
-  today: number
 }
 
 type ReducerAction =
@@ -42,11 +42,11 @@ function reducer(state: Task, action: ReducerAction): Task {
 const Popup: React.FC<Props> = ({
   popup,
   tasks,
-  today,
   closePopup,
   submitForm,
-  markAsDone
+  markAsDone,
 }) => {
+  const { todaysDate } = useContext(CalendarContext)
   let initialState: Task = {
     id: '',
     title: '',
@@ -54,7 +54,7 @@ const Popup: React.FC<Props> = ({
     date: '',
     fromTime: '',
     toTime: '',
-    isDone: false
+    isDone: false,
   }
 
   const [form, setForm] = useReducer(reducer, initialState)
@@ -86,8 +86,8 @@ const Popup: React.FC<Props> = ({
 
   return (
     <>
-      <div className="flex bg-white border rounded-md popup dark:border-transparent dark:bg-dark-background md:w-11/12 lg:max-w-6xl">
-        <div className="w-3/5 px-6 py-8 popup-content">
+      <div className="popup flex rounded-md border bg-white dark:border-transparent dark:bg-dark-background md:w-11/12 lg:max-w-6xl">
+        <div className="popup-content w-3/5 px-6 py-8">
           <div className="flex items-center justify-start">
             <button
               onClick={closePopup}
@@ -95,7 +95,7 @@ const Popup: React.FC<Props> = ({
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6 text-dark"
+                className="text-dark h-6 w-6"
                 fill="current"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -109,9 +109,9 @@ const Popup: React.FC<Props> = ({
               </svg>
             </button>
             <h3 className="ml-4 text-xl font-medium dark:text-dark-theme-heading">
-              {formattedDate === today
+              {formattedDate === todaysDate
                 ? `Schedule today's tasks`
-                : formattedDate === today + 1
+                : formattedDate === todaysDate + 1
                 ? `Schedule tomorrow's tasks`
                 : `Schedule tasks on ${popup.date}`}
             </h3>
@@ -128,7 +128,7 @@ const Popup: React.FC<Props> = ({
               type="text"
               placeholder="Schedule a meet with the team..."
               id="form_title"
-              className="w-full px-4 py-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
               onChange={setTaskTitle}
             />
           </div>
@@ -144,7 +144,7 @@ const Popup: React.FC<Props> = ({
               type="text"
               placeholder="Get feedback about the progress and look for any blockers"
               id="form_title"
-              className="w-full px-4 py-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
               onChange={setDescription}
             />
           </div>
@@ -156,7 +156,7 @@ const Popup: React.FC<Props> = ({
             >
               Time Slot
             </label>
-            <div className="flex items-center justify-between w-1/3">
+            <div className="flex w-1/3 items-center justify-between">
               <div>
                 <label htmlFor="from" className="dark:text-dark-theme-heading">
                   From
@@ -165,7 +165,7 @@ const Popup: React.FC<Props> = ({
                   type="time"
                   placeholder="From"
                   id="fromTime"
-                  className="px-4 py-2 mt-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+                  className="mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
                   onChange={setFrom}
                 />
               </div>
@@ -177,7 +177,7 @@ const Popup: React.FC<Props> = ({
                   type="time"
                   placeholder="To"
                   id="toTime"
-                  className="px-4 py-2 mt-2 border focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+                  className="mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
                   onChange={setTo}
                 />
               </div>
@@ -187,7 +187,7 @@ const Popup: React.FC<Props> = ({
           <div className="mt-6">
             <button
               type="button"
-              className="px-6 py-3 text-white transition-all duration-150 ease-linear border border-light-theme-primary bg-light-theme-primary hover:bg-transparent hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary dark:text-dark-theme-heading dark:hover:bg-transparent "
+              className="border border-light-theme-primary bg-light-theme-primary px-6 py-3 text-white transition-all duration-150 ease-linear hover:bg-transparent hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary dark:text-dark-theme-heading dark:hover:bg-transparent "
               onClick={() => submitForm(form)}
             >
               Add Task
@@ -195,7 +195,7 @@ const Popup: React.FC<Props> = ({
           </div>
         </div>
         <div className="w-2/5 px-6 py-8 ">
-          <Tasks tasks={tasks} markAsDone={markAsDone} date={popup.date} today={today} />
+          <Tasks tasks={tasks} markAsDone={markAsDone} date={popup.date} />
         </div>
       </div>
       <div className="overlay" onClick={closePopup}></div>
