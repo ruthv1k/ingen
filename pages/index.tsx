@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Head from 'next/head'
+import { NextPage } from 'next'
 import { customAlphabet } from 'nanoid'
 
 // types
@@ -9,24 +10,19 @@ import { Task } from '@/types/task'
 import Popup from '@/components/popup'
 
 // helpers
-import useCalendar from '@/helpers/useCalendar'
 import { usePopup } from 'hooks/usePopup'
-import { NextPage } from 'next'
+
+// context
+import CalendarContext from 'context/CalendarContext'
 
 const Home: NextPage = () => {
-  const [currentDate, setCurrentDate] = useState<Date | null>(null)
+  const { todaysDate, currentMonth, currentYear, daysInMonth } =
+    useContext(CalendarContext)
+
   const [tasks, setTasks] = useState<Array<Task>>([])
-  const { today, currentMonth, currentYear, daysInMonth } =
-    useCalendar(currentDate)
   const { popup, openPopup, closePopup } = usePopup()
 
   useEffect(() => {
-    // to debug today and currentDate
-    console.log('currentDate', currentDate)
-    console.log('today', today)
-
-    setCurrentDate(new Date())
-
     // check if there are tasks in local storage, if yes, update the state
     let storage: string | null = localStorage.getItem('tasks')
     if (storage) {
@@ -87,12 +83,20 @@ const Home: NextPage = () => {
                 key={i}
                 className={`relative h-[150px] w-[150px] overflow-hidden `}
               >
-                {day < today ? (
+                {day < todaysDate ? (
                   <button
                     value={day + '/' + currentMonth + '/' + currentYear}
                     onClick={handlePopup}
-                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border bg-white/30 bg-light-theme-primary/50 font-normal text-dark-theme-primary/50 transition-all duration-150 ease-linear dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25"
+                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border  bg-light-theme-primary/50 font-normal text-dark-theme-primary/50 transition-all duration-150 ease-linear dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25"
                     disabled
+                  >
+                    {day.toString()}
+                  </button>
+                ) : day === todaysDate ? (
+                  <button
+                    value={day + '/' + currentMonth + '/' + currentYear}
+                    onClick={handlePopup}
+                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border-2 border-light-theme-primary/50 bg-white/30 transition-all duration-150 ease-linear hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50"
                   >
                     {day.toString()}
                   </button>
@@ -100,11 +104,7 @@ const Home: NextPage = () => {
                   <button
                     value={day + '/' + currentMonth + '/' + currentYear}
                     onClick={handlePopup}
-                    className={`absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center bg-white/30 transition-all duration-150 ease-linear  ${
-                      day === today
-                        ? 'border-2 border-light-theme-primary/50 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50'
-                        : 'border border-light-theme-primary/50 hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50'
-                    }`}
+                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border border-light-theme-primary/50 bg-white/30 transition-all duration-150 ease-linear hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50"
                   >
                     {day.toString()}
                   </button>
@@ -138,7 +138,6 @@ const Home: NextPage = () => {
         <Popup
           popup={popup}
           tasks={tasks}
-          today={today}
           closePopup={closePopup}
           submitForm={submitForm}
           markAsDone={markAsDone}
