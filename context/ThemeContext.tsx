@@ -1,0 +1,63 @@
+import { createContext, useEffect, useState } from 'react'
+
+interface Theme {
+  currentTheme: string
+  setCurrentTheme: (theme: string) => void
+}
+
+export const ThemeContext = createContext<Theme | null>(null)
+
+function getInitialTheme(): string {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const storedPrefs = window.localStorage.getItem('color-scheme')
+    if (typeof storedPrefs === 'string') {
+      return storedPrefs
+    }
+    const userMedia = window.matchMedia('(prefers-color-scheme: dark)')
+    if (userMedia.matches) {
+      return 'dark'
+    }
+  }
+  return 'light'
+}
+
+interface Props {
+  initialTheme: string
+  children: React.ReactNode
+}
+
+const ThemeProvider: React.FC<Props> = ({ initialTheme, children }) => {
+  const [theme, setTheme] = useState<string>(getInitialTheme)
+
+  function setInitialTheme(theme: string) {
+    if (typeof window !== 'undefined') {
+      const root = window.document.documentElement
+      const isDark = theme === 'dark'
+      root.classList.remove(isDark ? 'light' : 'dark')
+      root.classList.add(theme)
+      localStorage.setItem('color-scheme', theme)
+    }
+  }
+
+  if (initialTheme) {
+    setInitialTheme(initialTheme)
+  }
+
+  function setCurrentTheme(theme: string) {
+    setTheme(theme)
+  }
+
+  useEffect(() => {
+    setInitialTheme(theme)
+  }, [theme])
+
+  return (
+    <ThemeContext.Provider
+      value={{ currentTheme: theme, setCurrentTheme: setCurrentTheme }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  )
+}
+
+export default ThemeProvider
