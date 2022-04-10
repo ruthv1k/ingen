@@ -14,10 +14,12 @@ import { usePopup } from 'hooks/usePopup'
 
 // context
 import CalendarContext from 'context/CalendarContext'
+import { ThemeContext } from 'context/ThemeContext'
 
 const Home: NextPage = () => {
   const { todaysDate, currentMonth, currentYear, daysInMonth } =
     useContext(CalendarContext)
+  const themeContext = useContext(ThemeContext)
 
   const [tasks, setTasks] = useState<Array<Task>>([])
   const { popup, openPopup, closePopup } = usePopup()
@@ -68,20 +70,75 @@ const Home: NextPage = () => {
         <title>Ingen - Manage your time efficiently</title>
       </Head>
 
-      <div className="flex w-screen items-center">
-        <div className="mx-auto flex h-screen min-w-fit flex-col items-start justify-center">
-          <h1 className="text-xl font-semibold dark:text-dark-theme-heading">
-            Calendar
-          </h1>
-          <h5 className="mt-2 mb-6 text-base font-medium text-black/50 dark:text-dark-theme-body">
-            {currentMonth} {currentYear}
-          </h5>
+      <div className="bg-white dark:bg-black">
+        <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between py-5">
+          <h3 className="font-bold dark:text-white">Ingen.</h3>
+          {themeContext?.currentTheme === 'dark' ? (
+            <button
+              className="mx-4 dark:text-white"
+              onClick={() =>
+                themeContext?.setCurrentTheme(
+                  themeContext?.currentTheme === 'dark' ? 'light' : 'dark'
+                )
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+            </button>
+          ) : (
+            <button
+              className="mx-4 dark:text-white"
+              onClick={() =>
+                themeContext?.setCurrentTheme(
+                  themeContext?.currentTheme === 'dark' ? 'light' : 'dark'
+                )
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
 
-          <div className="grid grid-cols-8 justify-start">
+        <div className="mx-auto flex h-screen w-[1280px] flex-col items-center justify-center">
+          <div className="w-full text-left">
+            <h1 className="text-left text-xl font-semibold dark:text-dark-theme-heading">
+              Calendar
+            </h1>
+            <h5 className="mt-2 mb-6 text-base font-medium text-black/50 dark:text-dark-theme-body">
+              {currentMonth} {currentYear}
+            </h5>
+          </div>
+
+          <div className="grid w-full grid-cols-8">
             {daysInMonth.map((day, i) => (
               <div
                 key={i}
-                className={`relative h-[150px] w-[150px] overflow-hidden `}
+                className={`relative h-[150px] w-auto min-w-[150px] overflow-hidden `}
               >
                 {day < todaysDate ? (
                   <button
