@@ -64,13 +64,18 @@ const Home: NextPage = () => {
     }
   }
 
+  const styles = {
+    calendarButton:
+      'absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center transition-all duration-150 ease-linear',
+  }
+
   return (
     <>
       <Head>
         <title>Ingen - Manage your time efficiently</title>
       </Head>
 
-      <div className="bg-white dark:bg-black">
+      <div className="bg-light-background dark:bg-dark-background">
         <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between py-5">
           <h3 className="font-bold dark:text-white">Ingen.</h3>
           {themeContext?.currentTheme === 'dark' ? (
@@ -144,7 +149,7 @@ const Home: NextPage = () => {
                   <button
                     value={day + '/' + currentMonth + '/' + currentYear}
                     onClick={handlePopup}
-                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border  bg-light-theme-primary/50 font-normal text-dark-theme-primary/50 transition-all duration-150 ease-linear dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25"
+                    className={`${styles.calendarButton} border-light-border/30 border border-light-border-pale font-normal text-light-text-pale dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25`}
                     disabled
                   >
                     {day.toString()}
@@ -153,7 +158,7 @@ const Home: NextPage = () => {
                   <button
                     value={day + '/' + currentMonth + '/' + currentYear}
                     onClick={handlePopup}
-                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border-2 border-light-theme-primary/50 bg-white/30 transition-all duration-150 ease-linear hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50"
+                    className={`${styles.calendarButton} absolute top-0 left-0 z-10 border border-light-theme-primary bg-white/30 hover:bg-light-theme-primary/25  hover:font-semibold hover:text-white dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50`}
                   >
                     {day.toString()}
                   </button>
@@ -161,7 +166,7 @@ const Home: NextPage = () => {
                   <button
                     value={day + '/' + currentMonth + '/' + currentYear}
                     onClick={handlePopup}
-                    className="absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center border border-light-theme-primary/50 bg-white/30 transition-all duration-150 ease-linear hover:border-light-theme-primary/25 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50"
+                    className={`${styles.calendarButton} absolute top-0 left-0 z-0 border border-light-theme-primary/25 bg-white/30 hover:border-light-theme-primary/25 hover:bg-light-theme-primary/10 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50`}
                   >
                     {day.toString()}
                   </button>
