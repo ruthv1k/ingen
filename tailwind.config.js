@@ -7,7 +7,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'light-text-dark': '#0a0a0a',
+        'light-text-pale': '#909090',
         'light-background': '#f0f3ff',
+        'light-border-pale': '#C8C8C8',
         'light-theme-primary': '#3F3CBB',
         'dark-background': '#1c1c27',
         'dark-theme-primary': '#2c2d4a',
