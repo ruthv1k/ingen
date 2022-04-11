@@ -19,6 +19,7 @@ type ReducerAction =
   | { type: 'setDate'; date: string }
   | { type: 'setTitle'; title: string }
   | { type: 'setDescription'; desc: string }
+  | { type: 'setTag'; tag: string }
   | { type: 'setFrom'; fromTime: string }
   | { type: 'setTo'; toTime: string }
 
@@ -30,6 +31,8 @@ function reducer(state: Task, action: ReducerAction): Task {
       return { ...state, title: action.title }
     case 'setDescription':
       return { ...state, description: action.desc }
+    case 'setTag':
+      return { ...state, tag: action.tag }
     case 'setFrom':
       return { ...state, fromTime: action.fromTime }
     case 'setTo':
@@ -51,6 +54,7 @@ const Popup: React.FC<Props> = ({
     id: '',
     title: '',
     description: '',
+    tag: '',
     date: '',
     fromTime: '',
     toTime: '',
@@ -68,6 +72,11 @@ const Popup: React.FC<Props> = ({
   function setDescription(e: React.ChangeEvent<HTMLInputElement>): void {
     let description = (e.target as HTMLInputElement).value
     setForm({ type: 'setDescription', desc: description })
+  }
+
+  function setTag(e: React.ChangeEvent<HTMLInputElement>): void {
+    let tag = (e.target as HTMLInputElement).value
+    setForm({ type: 'setTag', tag: tag })
   }
 
   function setFrom(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -118,68 +127,63 @@ const Popup: React.FC<Props> = ({
           </div>
 
           <div className="mt-6">
-            <label
-              htmlFor="form_title"
-              className="block pb-2 dark:text-dark-theme-heading"
-            >
+            <label className="block pb-3 dark:text-dark-theme-heading">
               What{`'`}s the task?
             </label>
             <input
               type="text"
               placeholder="Schedule a meet with the team..."
-              id="form_title"
-              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
               onChange={setTaskTitle}
             />
           </div>
 
           <div className="mt-6">
-            <label
-              htmlFor="add_field"
-              className="block pb-2 dark:text-dark-theme-heading"
-            >
+            <label className="block pb-3 dark:text-dark-theme-heading">
               Any message you want to add to the task?
             </label>
             <input
               type="text"
               placeholder="Get feedback about the progress and look for any blockers"
-              id="form_title"
-              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
               onChange={setDescription}
             />
           </div>
 
-          <div className="mt-6">
-            <label
-              htmlFor="add_field"
-              className="block pb-2 dark:text-dark-theme-heading"
-            >
-              Time Slot
-            </label>
-            <div className="flex w-1/3 items-center justify-between">
-              <div>
-                <label htmlFor="from" className="dark:text-dark-theme-heading">
-                  From
-                </label>
-                <input
-                  type="time"
-                  placeholder="From"
-                  id="fromTime"
-                  className="mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
-                  onChange={setFrom}
-                />
-              </div>
-              <div className="ml-4 ">
-                <label htmlFor="to" className="dark:text-dark-theme-heading">
-                  To
-                </label>
-                <input
-                  type="time"
-                  placeholder="To"
-                  id="toTime"
-                  className="mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
-                  onChange={setTo}
-                />
+          <div className="flex items-start justify-between">
+            <div className="mt-6">
+              <label className="block pb-3 dark:text-dark-theme-heading">
+                Add a tag to the task
+              </label>
+              <input
+                type="text"
+                placeholder="#work"
+                className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
+                onChange={setTag}
+              />
+            </div>
+
+            <div className="mt-6">
+              <label className="block pb-3 dark:text-dark-theme-heading">
+                Time Slot
+              </label>
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="dark:text-dark-theme-heading">From</label>
+                  <input
+                    type="time"
+                    className="ml-2 mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body "
+                    onChange={setFrom}
+                  />
+                </div>
+                <div className="ml-4">
+                  <label className="dark:text-dark-theme-heading">To</label>
+                  <input
+                    type="time"
+                    className="ml-2 mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+                    onChange={setTo}
+                  />
+                </div>
               </div>
             </div>
           </div>

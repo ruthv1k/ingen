@@ -44,7 +44,7 @@ const Tasks: React.FC<Props> = ({ tasks, date, markAsDone }) => {
                 <span className="text-xs dark:text-dark-theme-body">
                   {task.fromTime && task.toTime
                     ? `${task.fromTime} - ${task.toTime}`
-                    : ''}
+                    : task.tag}
                 </span>
                 <h5 className="mt-1 dark:text-dark-theme-heading">
                   {task.title}
