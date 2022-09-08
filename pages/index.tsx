@@ -1,10 +1,20 @@
+import {
+  addDays,
+  eachDayOfInterval,
+  endOfMonth,
+  format,
+  startOfMonth,
+  startOfTomorrow,
+  isPast,
+  isToday,
+} from 'date-fns'
 import { useContext, useEffect, useState } from 'react'
 import Head from 'next/head'
 import { NextPage } from 'next'
 import { customAlphabet } from 'nanoid'
 
 // types
-import { Task } from '@/types/task'
+import { Task } from 'types'
 
 // components
 import Popup from '@/components/popup'
@@ -13,14 +23,20 @@ import Popup from '@/components/popup'
 import { usePopup } from 'hooks/usePopup'
 
 // context
-import CalendarContext from 'context/CalendarContext'
 import { ThemeContext } from 'context/ThemeContext'
+import { ToggleThemeButton } from '@/components/buttons/buttons'
+
+const getMonthDates = (date: Date) => {
+  return eachDayOfInterval({
+    start: startOfMonth(date),
+    end: endOfMonth(date),
+  })
+}
 
 const Home: NextPage = () => {
-  const { todaysDate, currentMonth, currentYear, daysInMonth } =
-    useContext(CalendarContext)
   const themeContext = useContext(ThemeContext)
 
+  const [month, setMonth] = useState(getMonthDates(startOfTomorrow()))
   const [tasks, setTasks] = useState<Array<Task>>([])
   const { popup, openPopup, closePopup } = usePopup()
 
@@ -65,8 +81,14 @@ const Home: NextPage = () => {
   }
 
   const styles = {
-    calendarButton:
-      'absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center transition-all duration-150 ease-linear',
+    calendarButton: {
+      pastDays:
+        'absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center transition-all duration-150 ease-linear border-light-border/30 border border-light-border-pale font-normal text-light-text-pale dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25',
+      currentDay:
+        'absolute top-0 left-0 z-10 flex h-full w-full items-center justify-center transition-all duration-150 ease-linear border-2 border-light-theme-primary bg-white/30 hover:bg-light-theme-primary/25  hover:font-semibold hover:text-white dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50',
+      upcomingDays:
+        'absolute top-0 left-0 z-0 flex h-full w-full items-center justify-center transition-all duration-150 ease-linear border border-light-theme-primary/25 bg-white/30 hover:border-light-theme-primary/25 hover:bg-light-theme-primary/10 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50',
+    },
   }
 
   return (
@@ -78,55 +100,7 @@ const Home: NextPage = () => {
       <div className="bg-light-background dark:bg-dark-background">
         <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between py-5">
           <h3 className="font-bold dark:text-white">Ingen.</h3>
-          {themeContext?.currentTheme === 'dark' ? (
-            <button
-              className="mx-4 dark:text-white"
-              onClick={() =>
-                themeContext?.setCurrentTheme(
-                  themeContext?.currentTheme === 'dark' ? 'light' : 'dark'
-                )
-              }
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
-            </button>
-          ) : (
-            <button
-              className="mx-4 dark:text-white"
-              onClick={() =>
-                themeContext?.setCurrentTheme(
-                  themeContext?.currentTheme === 'dark' ? 'light' : 'dark'
-                )
-              }
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                />
-              </svg>
-            </button>
-          )}
+          <ToggleThemeButton themeContext={themeContext} />
         </div>
 
         <div className="mx-auto flex h-screen w-[1280px] flex-col items-center justify-center">
@@ -135,48 +109,35 @@ const Home: NextPage = () => {
               Calendar
             </h1>
             <h5 className="mt-2 mb-6 text-base font-medium text-black/50 dark:text-dark-theme-body">
-              {currentMonth} {currentYear}
+              {format(new Date(), 'MMMM')} {format(new Date(), 'y')}
             </h5>
           </div>
 
-          <div className="grid w-full grid-cols-8">
-            {daysInMonth.map((day, i) => (
+          <div className="grid grid-cols-8">
+            {month.map((day, i) => (
               <div
                 key={i}
-                className={`relative h-[150px] w-auto min-w-[150px] overflow-hidden `}
+                className={`relative h-[120px] w-[120px] overflow-hidden `}
               >
-                {day < todaysDate ? (
-                  <button
-                    value={day + '/' + currentMonth + '/' + currentYear}
-                    onClick={handlePopup}
-                    className={`${styles.calendarButton} border-light-border/30 border border-light-border-pale font-normal text-light-text-pale dark:border-dark-theme-primary/20 dark:bg-dark-theme-primary/20 dark:text-white/25`}
-                    disabled
-                  >
-                    {day.toString()}
-                  </button>
-                ) : day === todaysDate ? (
-                  <button
-                    value={day + '/' + currentMonth + '/' + currentYear}
-                    onClick={handlePopup}
-                    className={`${styles.calendarButton} absolute top-0 left-0 z-10 border border-light-theme-primary bg-white/30 hover:bg-light-theme-primary/25  hover:font-semibold hover:text-white dark:border-dark-theme-primary dark:bg-dark-theme-primary/5 dark:text-white dark:hover:bg-dark-theme-primary/50`}
-                  >
-                    {day.toString()}
-                  </button>
-                ) : (
-                  <button
-                    value={day + '/' + currentMonth + '/' + currentYear}
-                    onClick={handlePopup}
-                    className={`${styles.calendarButton} absolute top-0 left-0 z-0 border border-light-theme-primary/25 bg-white/30 hover:border-light-theme-primary/25 hover:bg-light-theme-primary/10 hover:font-semibold hover:text-light-theme-primary dark:border-dark-theme-primary/25 dark:bg-dark-theme-primary/5 dark:text-white dark:hover:border-dark-theme-primary  dark:hover:bg-dark-theme-primary/50`}
-                  >
-                    {day.toString()}
-                  </button>
-                )}
-
+                <button
+                  value={format(day, 'PP')}
+                  onClick={handlePopup}
+                  className={
+                    isPast(day)
+                      ? styles.calendarButton.pastDays
+                      : isToday(day)
+                      ? styles.calendarButton.currentDay
+                      : styles.calendarButton.upcomingDays
+                  }
+                >
+                  {format(day, 'd')}
+                </button>
                 {tasks && tasks.length > 0 && (
                   <ul className="absolute top-3 left-[5px] -z-0 w-[138px]">
                     {tasks.map((task) => {
                       if (
-                        parseInt(task.date.split('/')[0]) === day &&
+                        parseInt(task.date.split('/')[0]) ===
+                          parseInt(format(day, 'd')) &&
                         task.isDone === false
                       )
                         return (
