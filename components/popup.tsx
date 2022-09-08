@@ -1,8 +1,8 @@
-import { useEffect, useReducer, useContext } from 'react'
+import { Fragment, useEffect, useReducer, useContext } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { format } from 'date-fns'
 
-import { Task } from '@/types/task'
-import Tasks from 'components/tasks'
-import CalendarContext from 'context/CalendarContext'
+import { Task } from 'types'
 
 interface Props {
   popup: {
@@ -49,7 +49,7 @@ const Popup: React.FC<Props> = ({
   submitForm,
   markAsDone,
 }) => {
-  const { todaysDate } = useContext(CalendarContext)
+  const todaysDate = parseInt(format(new Date(), 'd'))
   let initialState: Task = {
     id: '',
     title: '',
@@ -94,116 +94,119 @@ const Popup: React.FC<Props> = ({
   }, [popup.isOpen, popup.date])
 
   return (
-    <>
-      <div className="popup flex rounded-md border bg-white dark:border-transparent dark:bg-dark-background md:w-11/12 lg:max-w-6xl">
-        <div className="popup-content w-3/5 px-6 py-8">
-          <div className="flex items-center justify-start">
-            <button
-              onClick={closePopup}
-              className="flex items-center dark:text-dark-theme-heading"
+    <Transition appear show={popup.isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closePopup}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-dark h-6 w-6"
-                fill="current"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-            <h3 className="ml-4 text-xl font-medium dark:text-dark-theme-heading">
-              {formattedDate === todaysDate
-                ? `Schedule today's tasks`
-                : formattedDate === todaysDate + 1
-                ? `Schedule tomorrow's tasks`
-                : `Schedule tasks on ${popup.date}`}
-            </h3>
-          </div>
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:border-transparent dark:bg-dark-background">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-dark-theme-heading"
+                >
+                  {formattedDate === todaysDate
+                    ? `Schedule today's tasks`
+                    : formattedDate === todaysDate + 1
+                    ? `Schedule tomorrow's tasks`
+                    : `Scheduled tasks on ${popup.date}`}
+                </Dialog.Title>
 
-          <div className="mt-6">
-            <label className="block pb-3 dark:text-dark-theme-heading">
-              What{`'`}s the task?
-            </label>
-            <input
-              type="text"
-              placeholder="Schedule a meet with the team..."
-              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
-              onChange={setTaskTitle}
-            />
-          </div>
-
-          <div className="mt-6">
-            <label className="block pb-3 dark:text-dark-theme-heading">
-              Any message you want to add to the task?
-            </label>
-            <input
-              type="text"
-              placeholder="Get feedback about the progress and look for any blockers"
-              className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
-              onChange={setDescription}
-            />
-          </div>
-
-          <div className="flex items-start justify-between">
-            <div className="mt-6">
-              <label className="block pb-3 dark:text-dark-theme-heading">
-                Add a tag to the task
-              </label>
-              <input
-                type="text"
-                placeholder="#work"
-                className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
-                onChange={setTag}
-              />
-            </div>
-
-            <div className="mt-6">
-              <label className="block pb-3 dark:text-dark-theme-heading">
-                Time Slot
-              </label>
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="dark:text-dark-theme-heading">From</label>
+                <div className="mt-6">
+                  <label className="block pb-3 dark:text-dark-theme-heading">
+                    What{`'`}s the task?
+                  </label>
                   <input
-                    type="time"
-                    className="ml-2 mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body "
-                    onChange={setFrom}
+                    type="text"
+                    placeholder="Schedule a meet with the team..."
+                    className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
+                    onChange={setTaskTitle}
                   />
                 </div>
-                <div className="ml-4">
-                  <label className="dark:text-dark-theme-heading">To</label>
+
+                <div className="mt-6">
+                  <label className="block pb-3 dark:text-dark-theme-heading">
+                    Any message you want to add to the task?
+                  </label>
                   <input
-                    type="time"
-                    className="ml-2 mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
-                    onChange={setTo}
+                    type="text"
+                    placeholder="Get feedback about the progress and look for any blockers"
+                    className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
+                    onChange={setDescription}
                   />
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="mt-6">
-            <button
-              type="button"
-              className="border border-light-theme-primary bg-light-theme-primary px-6 py-3 text-white transition-all duration-150 ease-linear hover:bg-transparent hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary dark:text-dark-theme-heading dark:hover:bg-transparent "
-              onClick={() => submitForm(form)}
-            >
-              Add Task
-            </button>
+                <div className="mt-6">
+                  <label className="block pb-3 dark:text-dark-theme-heading">
+                    Add a tag to the task
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="#work"
+                    className="w-full border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body dark:placeholder:text-dark-theme-body/50"
+                    onChange={setTag}
+                  />
+                </div>
+
+                <div className="mt-6">
+                  <label className="block pb-3 dark:text-dark-theme-heading">
+                    Time Slot
+                  </label>
+
+                  <div className="flex items-center justify-start">
+                    <label className="dark:text-dark-theme-heading">
+                      From
+                      <input
+                        type="time"
+                        className="ml-2 mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body "
+                        onChange={setFrom}
+                      />
+                    </label>
+                    <label className="ml-4 block dark:text-dark-theme-heading">
+                      To
+                      <input
+                        type="time"
+                        className="ml-2 mt-2 border px-4 py-2 focus:outline-none dark:border-dark-theme-primary dark:bg-transparent dark:text-dark-theme-body"
+                        onChange={setTo}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <button
+                    type="button"
+                    className="border border-light-theme-primary bg-light-theme-primary px-6 py-3 text-white transition-all duration-150 ease-linear hover:bg-transparent hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary dark:text-dark-theme-heading dark:hover:bg-transparent "
+                    onClick={() => submitForm(form)}
+                  >
+                    Add Task
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
           </div>
         </div>
-        <div className="w-2/5 px-6 py-8 ">
-          <Tasks tasks={tasks} markAsDone={markAsDone} date={popup.date} />
-        </div>
-      </div>
-      <div className="overlay" onClick={closePopup}></div>
-    </>
+      </Dialog>
+    </Transition>
   )
 }
 
