@@ -1,9 +1,5 @@
+import { Theme } from 'types'
 import { createContext, useEffect, useState } from 'react'
-
-interface Theme {
-  currentTheme: string
-  setCurrentTheme: (theme: string) => void
-}
 
 export const ThemeContext = createContext<Theme | null>(null)
 
