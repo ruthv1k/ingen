@@ -15,17 +15,6 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: rgb(var(--light-background));
-  }
-}
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: rgb(var(--dark-background));
-  }
-}
-
 /* popup */
 .popup {
   transition: ease-in-out;
