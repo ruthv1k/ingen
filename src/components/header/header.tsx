@@ -1,7 +1,8 @@
-import { ThemeContext } from 'context/ThemeContext'
 import Link from 'next/link'
+import { useContext } from 'react'
 import { useRouter } from 'next/router'
-import { useContext, useEffect } from 'react'
+
+import { ThemeContext } from 'src/context/ThemeContext'
 import { ToggleThemeButton } from '../buttons'
 
 const Header = () => {

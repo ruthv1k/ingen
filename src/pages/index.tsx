@@ -1,27 +1,25 @@
 import {
   eachDayOfInterval,
   endOfMonth,
-  format,
   startOfMonth,
   startOfToday,
 } from 'date-fns'
 import { customAlphabet } from 'nanoid'
 import { NextPage } from 'next'
-import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 // types
-import { Task } from 'types'
+import { Task } from 'src/types'
 
 // components
-import Popup from '@/components/popup'
+import Popup from 'src/components/popup'
 
 // helpers
-import { usePopup } from 'hooks/usePopup'
+import { usePopup } from 'src/hooks/usePopup'
 
 // context
-import Calendar from '@/components/calendar'
-import AppLayout from '@/components/layout'
+import Calendar from 'src/components/calendar'
+import AppLayout from 'src/components/layout'
 
 const getMonthDates = (date: Date) => {
   return eachDayOfInterval({
@@ -64,18 +62,12 @@ const Home: NextPage = () => {
   return (
     <>
       <AppLayout>
-        <Calendar
-          month={month}
-          setMonth={setMonth}
-          handlePopup={handlePopup}
-          tasks={tasks}
-        />
+        <Calendar month={month} setMonth={setMonth} handlePopup={handlePopup} />
       </AppLayout>
 
       {popup.isOpen && (
         <Popup
           popup={popup}
-          tasks={tasks}
           closePopup={closePopup}
           submitForm={submitForm}
           markAsDone={markAsDone}

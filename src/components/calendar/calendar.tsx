@@ -6,17 +6,16 @@ import {
   startOfMonth,
 } from 'date-fns'
 import { Dispatch, SetStateAction } from 'react'
-import { Task } from 'types'
 import CalendarCell from './calendar.cell'
+
+import { LeftArrowIcon, RightArrowIcon } from '../icons'
 
 const Calendar = ({
   month,
-  tasks,
   setMonth,
   handlePopup,
 }: {
   month: Date[]
-  tasks: Task[]
   setMonth: Dispatch<SetStateAction<Date[]>>
   handlePopup: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }) => {
@@ -41,39 +40,13 @@ const Calendar = ({
       <h1 className="mb-4 text-left font-semibold dark:text-dark-theme-heading">
         <div className="mb-4 flex items-center justify-between">
           <button className="dark:text-white" onClick={moveToPrevMonth}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="h-6 w-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
+            <LeftArrowIcon />
           </button>
           <h1 className="dark:text-white">
             {format(month[0], 'MMMM')} {format(month[0], 'yyyy')}
           </h1>
           <button className="dark:text-white" onClick={moveToNextMonth}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="h-6 w-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
+            <RightArrowIcon />
           </button>
         </div>
       </h1>

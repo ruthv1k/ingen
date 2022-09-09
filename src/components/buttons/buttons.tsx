@@ -1,5 +1,5 @@
 import { MoonIcon, SunIcon } from '@/components/icons'
-import { Theme } from 'types'
+import { Theme } from 'src/types'
 
 export const ToggleThemeButton = ({
   themeContext,

@@ -1,8 +1,7 @@
-import { Fragment, useEffect, useReducer, useContext } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { format } from 'date-fns'
+import { Fragment, useEffect, useReducer } from 'react'
 
-import { Task } from 'types'
+import { Task } from 'src/types'
 
 interface Props {
   popup: {
@@ -11,7 +10,6 @@ interface Props {
   }
   closePopup: () => void
   submitForm: (form: Task) => void
-  tasks: Array<Task>
   markAsDone: (id: string) => void
 }
 
@@ -44,12 +42,10 @@ function reducer(state: Task, action: ReducerAction): Task {
 
 const Popup: React.FC<Props> = ({
   popup,
-  tasks,
   closePopup,
   submitForm,
   markAsDone,
 }) => {
-  const todaysDate = parseInt(format(new Date(), 'd'))
   let initialState: Task = {
     id: '',
     title: '',
@@ -62,7 +58,6 @@ const Popup: React.FC<Props> = ({
   }
 
   const [form, setForm] = useReducer(reducer, initialState)
-  const formattedDate = parseInt(popup.date.split('/')[0])
 
   function setTaskTitle(e: React.ChangeEvent<HTMLInputElement>): void {
     let taskTitle = (e.target as HTMLInputElement).value
@@ -124,11 +119,7 @@ const Popup: React.FC<Props> = ({
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 dark:text-dark-theme-heading"
                 >
-                  {formattedDate === todaysDate
-                    ? `Schedule today's tasks`
-                    : formattedDate === todaysDate + 1
-                    ? `Schedule tomorrow's tasks`
-                    : `Scheduled tasks on ${popup.date}`}
+                  Add Task - {popup.date}
                 </Dialog.Title>
 
                 <div className="mt-6">
@@ -195,7 +186,7 @@ const Popup: React.FC<Props> = ({
                 <div className="mt-6">
                   <button
                     type="button"
-                    className="border border-light-theme-primary bg-light-theme-primary px-6 py-3 text-white transition-all duration-150 ease-linear hover:bg-transparent hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary dark:text-dark-theme-heading dark:hover:bg-transparent "
+                    className="rounded-md border border-light-theme-primary bg-light-theme-primary px-6 py-3 text-white transition-all duration-150 ease-linear hover:bg-transparent hover:text-light-theme-primary dark:border-dark-theme-primary dark:bg-dark-theme-primary dark:text-dark-theme-heading dark:hover:bg-transparent "
                     onClick={() => submitForm(form)}
                   >
                     Add Task

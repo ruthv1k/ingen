@@ -1,5 +1,6 @@
-import { Theme } from 'types'
 import { createContext, useEffect, useState } from 'react'
+
+import { Theme } from 'src/types'
 
 export const ThemeContext = createContext<Theme | null>(null)
 
