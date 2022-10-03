@@ -6,7 +6,7 @@ import {
 } from 'date-fns'
 import { customAlphabet } from 'nanoid'
 import { NextPage } from 'next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // types
 import { Task } from 'src/types'
@@ -58,6 +58,18 @@ const Home: NextPage = () => {
       closePopup()
     }
   }
+
+  useEffect(() => {
+    let storage: string | null = localStorage.getItem('tasks')
+    if (storage) {
+      let tasksInLocal: Array<Task> = JSON.parse(storage).tasks
+      if (tasks.length === 0 && tasksInLocal.length > 0) {
+        setTasks(tasksInLocal)
+      }
+    }
+    if (tasks.length > 0)
+      localStorage.setItem('tasks', JSON.stringify({ tasks }))
+  }, [tasks])
 
   return (
     <>
