@@ -1,25 +1,8 @@
 import { createContext, useEffect, useState } from 'react'
 
-interface Theme {
-  currentTheme: string
-  setCurrentTheme: (theme: string) => void
-}
+import { Theme } from 'src/types'
 
 export const ThemeContext = createContext<Theme | null>(null)
-
-function getInitialTheme(): string {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const storedPrefs = window.localStorage.getItem('color-scheme')
-    if (typeof storedPrefs === 'string') {
-      return storedPrefs
-    }
-    const userMedia = window.matchMedia('(prefers-color-scheme: dark)')
-    if (userMedia.matches) {
-      return 'dark'
-    }
-  }
-  return 'light'
-}
 
 interface Props {
   initialTheme: string
@@ -27,7 +10,7 @@ interface Props {
 }
 
 const ThemeProvider: React.FC<Props> = ({ initialTheme, children }) => {
-  const [theme, setTheme] = useState<string>(getInitialTheme)
+  const [theme, setTheme] = useState<string>(initialTheme)
 
   function setInitialTheme(theme: string) {
     if (typeof window !== 'undefined') {
@@ -37,10 +20,6 @@ const ThemeProvider: React.FC<Props> = ({ initialTheme, children }) => {
       root.classList.add(theme)
       localStorage.setItem('color-scheme', theme)
     }
-  }
-
-  if (initialTheme) {
-    setInitialTheme(initialTheme)
   }
 
   function setCurrentTheme(theme: string) {

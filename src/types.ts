@@ -1,3 +1,8 @@
+export interface Theme {
+  currentTheme: string
+  setCurrentTheme: (theme: string) => void
+}
+
 export interface Task {
   id: string
   title: string
