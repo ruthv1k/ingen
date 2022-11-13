@@ -1,7 +1,6 @@
 # Ingen
 Ingen is a collection of productivity tools to enhance and focus on your day-to-day tasks 
 
-
 ## Features
 - Add / Manage your tasks / todos in your calendar
 
@@ -12,3 +11,6 @@ Ingen is a collection of productivity tools to enhance and focus on your day-to-
 - Import and Export the calendar
 - Stopwatch
 - Timer
+
+## Current Issues
+- Current date is incorrect when someone lands on the calendar page
