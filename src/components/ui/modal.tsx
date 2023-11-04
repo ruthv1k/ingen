@@ -59,7 +59,7 @@ const Modal = ({
                   </Dialog.Title>
 
                   <button
-                    className='rounded border border-transparent p-2 outline-none transition hover:bg-gray-100 focus:border-gray-300'
+                    className='rounded border border-transparent p-2 outline-none transition hover:bg-gray-900'
                     onClick={onClose}
                   >
                     <XIcon className='text-gray-400' />

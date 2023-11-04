@@ -1,4 +1,6 @@
 import { format, isPast, isToday } from 'date-fns';
+import { useState } from 'react';
+import CreateTaskModal from './create-task-modal';
 
 const styles = {
   calendarButton: {
@@ -11,18 +13,18 @@ const styles = {
   },
 };
 
-const CalendarCell = ({
-  day,
-  onClick,
-}: {
-  day: Date;
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-}) => {
+const CalendarCell = ({ day }: { day: Date }) => {
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
+
+  const handleClick = () => {
+    setIsTaskModalOpen(true);
+  };
+
   return (
     <div className='relative min-h-[80px] min-w-[60px] overflow-hidden md:min-h-[100px] md:min-w-[100px]'>
       <button
         value={format(day, 'PP')}
-        onClick={onClick}
+        onClick={handleClick}
         className={
           isToday(day)
             ? styles.calendarButton.today
@@ -33,6 +35,11 @@ const CalendarCell = ({
       >
         {format(day, 'd')}
       </button>
+
+      <CreateTaskModal
+        isOpen={isTaskModalOpen}
+        handleClose={() => setIsTaskModalOpen(false)}
+      />
     </div>
   );
 };

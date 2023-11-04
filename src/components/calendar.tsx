@@ -50,7 +50,7 @@ const Calendar = () => {
       </div>
       <div className='grid grid-cols-3 md:grid-cols-6'>
         {month.map((day, i) => (
-          <CalendarCell key={i} day={day} onClick={() => console.log('show')} />
+          <CalendarCell key={i} day={day} />
         ))}
       </div>
     </>
